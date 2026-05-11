@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clan Details | Midnight Runners</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "primary": "#4f378a",
+                    "on-surface": "#1d1b20",
+                    "on-primary-fixed": "#22005d",
+                    "primary-fixed": "#e9ddff",
+                    "surface": "#fdf7ff",
+                    "tertiary-fixed": "#ffdf93",
+                    "surface-container-low": "#f8f2fa",
+                    "background": "#fdf7ff",
+                    "inverse-on-surface": "#f5eff7",
+                    "surface-container-highest": "#e6e0e9",
+                    "secondary-fixed-dim": "#cdc0e9",
+                    "on-tertiary-container": "#503d00",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#4b4263",
+                    "on-tertiary-fixed": "#241a00",
+                    "surface-container": "#f2ecf4",
+                    "on-secondary-container": "#645a7d",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#e7c365",
+                    "primary-fixed-dim": "#cfbcff",
+                    "surface-container-high": "#ece6ee",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#63597c",
+                    "surface-tint": "#6750a4",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#6750a4",
+                    "on-primary-container": "#e0d2ff",
+                    "outline": "#7a7582",
+                    "on-surface-variant": "#494551",
+                    "tertiary-container": "#c9a74d",
+                    "on-secondary-fixed": "#1f1635",
+                    "surface-dim": "#ded8e0",
+                    "inverse-surface": "#322f35",
+                    "on-tertiary-fixed-variant": "#594400",
+                    "on-background": "#1d1b20",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#cfbcff",
+                    "surface-bright": "#fdf7ff",
+                    "outline-variant": "#cbc4d2",
+                    "secondary-container": "#e1d4fd",
+                    "on-primary-fixed-variant": "#4f378a",
+                    "tertiary": "#765b00",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e6e0e9",
+                    "secondary-fixed": "#e9ddff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "2rem",
+                    "xs": "0.5rem",
+                    "base": "4px",
+                    "xl": "3rem",
+                    "md": "1.5rem",
+                    "sm": "1rem",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md transition-all duration-300">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-display-lg text-headline-md font-bold text-on-surface">Midnight Runners</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pb-32">
+<!-- Hero Section -->
+<div class="relative h-[397px] w-full overflow-hidden">
+<img alt="Clan Banner" class="w-full h-full object-cover" data-alt="A wide, cinematic shot of a group of diverse urban runners captured in mid-stride during a sunset run through a modern city park. The lighting is warm and golden, casting long shadows and highlighting the energetic atmosphere. The visual style is premium and clean, with a shallow depth of field that emphasizes the runners against a blurred architectural background. The overall mood is high-performance yet communal and leisure-oriented." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdVnZxPvYzHCYfWTni01gPE-N3wWAIc9wS-Ed9LW9zvl_rwqG2Qlmk1NJBq_loQvqaj9nQDobC6aE06tZTjZJJRRz9KFTwcdG1weThoSmiZawe8douOV-uPvuFmwUqKGle3EcvA3wL5y92I0nyGd_7-lX7KI57SOKJg0188B6rbNhkIefJooVks9G8fViOC2eZr2H8wvaLJIVDDzZHWEICaQyVkHy7HE3Fpvim0NVqFG25h3tVmD8y8LgqiFLHMnNJXc6KosZpnATy"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+</div>
+<!-- Header Information -->
+<div class="max-w-container-max mx-auto px-margin-mobile -mt-12 relative z-10">
+<div class="bg-surface p-lg rounded-xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)]">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="bg-tertiary-container/10 text-tertiary font-label-md px-3 py-1 rounded-full text-sm">Elite Tier</span>
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">verified</span> Verified
+                            </span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Midnight Runners</h1>
+<p class="font-body-lg text-on-surface-variant max-w-2xl mb-4">A high-intensity community for night-owls and urban athletes pushing limits across the city skyline.</p>
+<div class="flex flex-wrap items-center gap-md">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<span class="font-label-md text-on-surface">Admin: <span class="font-bold">Alex Rivera</span></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-md">group</span>
+<span class="font-label-md text-on-surface"><span class="font-bold">1,428</span> Members</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-md">location_on</span>
+<span class="font-label-md text-on-surface">Chicago, IL</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-4 md:mt-0">
+<button class="flex-1 md:flex-none px-xl py-3 bg-primary text-on-primary font-label-md rounded-full shadow-lg hover:shadow-xl transition-all scale-100 active:scale-95">
+                            Join Clan
+                        </button>
+<button class="p-3 bg-surface-container-high text-on-surface font-label-md rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Tabs -->
+<div class="sticky top-16 bg-surface z-40 border-b border-surface-container mt-lg">
+<div class="max-w-container-max mx-auto px-margin-mobile flex gap-xl overflow-x-auto hide-scrollbar">
+<button class="py-4 border-b-2 border-primary text-primary font-label-md whitespace-nowrap">Events</button>
+<button class="py-4 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md transition-colors whitespace-nowrap">Members</button>
+<button class="py-4 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md transition-colors whitespace-nowrap">Media</button>
+<button class="py-4 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md transition-colors whitespace-nowrap">Discussions</button>
+</div>
+</div>
+<!-- Content Canvas -->
+<div class="max-w-container-max mx-auto px-margin-mobile mt-lg">
+<!-- Featured Event / Bento Style -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-xl">
+<div class="md:col-span-8 bg-surface-container-lowest rounded-xl p-lg shadow-[0px_10px_30px_rgba(15,23,42,0.04)] border border-surface-container overflow-hidden group">
+<div class="flex justify-between items-start mb-md">
+<div>
+<span class="text-error font-label-md flex items-center gap-1 mb-xs">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">emergency</span> LIVE EVENT
+                            </span>
+<h3 class="font-headline-md text-headline-md mb-2">City Lights 10K Sprint</h3>
+</div>
+<div class="bg-primary-container text-on-primary-container font-label-md px-4 py-2 rounded-xl">
+                            TONIGHT
+                        </div>
+</div>
+<div class="relative h-64 w-full rounded-xl overflow-hidden mb-md">
+<img alt="Event Preview" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A vibrant night scene of city streets illuminated by neon signs and streetlights, with several runners blurred in motion as they pass through the frame. The camera is low to the ground, capturing the wet asphalt reflections. The color palette is dominated by deep purples, electric blues, and sharp neon pinks, creating a high-energy urban sports atmosphere. The style is modern, dynamic, and editorial." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6eXqlh1IGWQ9VlwOt0KNND0gaafbd_jby8ul6FGuOqMbgCUUA9N8ve5rgk2Qia-UDVEk8TBoFZ6aA-nYmblA3h9gbsBC0z4YRdZ--r389mmI23ykEIDm3O7VuHbSUujHkkbN9AsUHjLBh37hYTK8Y5_F77kgV6J5SWRGq1TGRENi3wr9UGlg0hU1uZSduAzotZTs1_uj2HorDN-Xfoz_vk0XORlqEFGisdooN3hA8OiDujQK7zfACuTDP68zijRqMRZIKTevgRTQi"/>
+</div>
+<div class="grid grid-cols-3 gap-md">
+<div class="bg-surface-container p-sm rounded-lg flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">distance</span>
+<span class="font-bold text-on-surface">10.0 km</span>
+<span class="text-xs text-on-surface-variant">Distance</span>
+</div>
+<div class="bg-surface-container p-sm rounded-lg flex flex-col items-center">
+<span class="material-symbols-outlined text-secondary mb-1">timer</span>
+<span class="font-bold text-on-surface">45 min</span>
+<span class="text-xs text-on-surface-variant">Pace Goal</span>
+</div>
+<div class="bg-surface-container p-sm rounded-lg flex flex-col items-center">
+<span class="material-symbols-outlined text-tertiary mb-1">local_fire_department</span>
+<span class="font-bold text-on-surface">Hard</span>
+<span class="text-xs text-on-surface-variant">Intensity</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<div class="bg-primary p-lg rounded-xl text-on-primary flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-sm uppercase tracking-widest opacity-80 mb-2 block">Monthly Stats</span>
+<h4 class="text-headline-md font-bold">12,400 KM</h4>
+<p class="text-sm opacity-90">Total clan distance covered in June.</p>
+</div>
+<div class="flex -space-x-3 mt-4">
+<img alt="Member" class="w-10 h-10 rounded-full border-2 border-primary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkKPvI_0eaotZ6lQqg3CE2ii-1q8yaqEKMXmzmBHB4TaVmoVCVwPXT_dJ5YXETH4WuPzYr9lYBBVq0UuMf_JK3qWzNwnaRooCxw7CwqSJcdhSOKblAdMLEAsBfX1L7FbSVF4hj6FbuU4rR0JdnNt9xzrL0PeWU7AVvl9gdou84RNXrhfpt7E0MYWrCf3-_t8Qq_DLpecw9HCplHnrw3QG_WVNXhsuKQLzK96VRAhVIWdVEXLhmHEAI3C7ex3t3zNZGijnw-K2v85mr"/>
+<img alt="Member" class="w-10 h-10 rounded-full border-2 border-primary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZiMdiF0YIBw_0ALcIe-67Tu2kU0ZXEws4ghHpY5mHq9d33WEJiJNmagchDOh9oh8zlStJDN6wTOoDdtqFM0l4J-UAhlGvEspvkVvxYn-TOcJkWSICSqUFwDE5hsYSJjZutQjJ3enfsMjlCigRuPNav1Dm4Hl1Xc_Ila8YTfak7AfrzKqltJP2FQtseprgunCcYCvO6kvtctsWj9v3IZqal8h5YLT4Uf9Y_acYFg-v8BMpl2TYNY5-sjPdOLrDkoh6ZjWn5sr7Jbj9"/>
+<img alt="Member" class="w-10 h-10 rounded-full border-2 border-primary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw5JGBAsWqdL1921L9PgfOXoj1OjhCR49tkzDfwYGNtq5KCfsHOUc2VxHSy7L1WkoCpEVdegH7lAlS2SL6hTHwL87RgeL13T6vXc712NimoFOaVd7TN8BQmOym2R3eI3lDaJxl_prArGJtZ_h2_N47MDcwxPQO560lm10hTCEZlGsq3wfilGq69oY6kBPBMPkT6I9XXpuG4-DsuMQzPdhlWhs7lFBom-tAnmAAI7tgD5sIqOj4B60-EzhptngwrNru9EuZf9uE0xg-"/>
+<div class="w-10 h-10 rounded-full border-2 border-primary bg-primary-container flex items-center justify-center text-xs font-bold">+82</div>
+</div>
+</div>
+<div class="bg-surface-container p-lg rounded-xl flex flex-col justify-between border border-surface-container-high">
+<h4 class="font-label-md text-on-surface mb-md">Upcoming Challenges</h4>
+<ul class="space-y-sm">
+<li class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<span class="font-label-md text-sm">Skyline Summit (July 15)</span>
+</li>
+<li class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="font-label-md text-sm">River Walk Social (July 22)</span>
+</li>
+</ul>
+<button class="mt-md text-primary font-bold text-sm flex items-center gap-1">
+                            View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- More Events List -->
+<h2 class="font-headline-md text-headline-md mb-lg">Upcoming Events</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Event Card 1 -->
+<div class="bg-surface-container-lowest p-sm rounded-xl flex gap-md shadow-[0px_10px_30px_rgba(15,23,42,0.02)] border border-surface-container hover:shadow-md transition-shadow">
+<div class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Event" class="w-full h-full object-cover" data-alt="A close-up shot of professional running shoes hitting a bridge floor during a misty morning. The focus is sharp on the shoes, with the bridge structure and morning fog softly blurred in the background. Cool blue and grey tones dominate the palette, evoking a sense of calm determination. The lighting is diffused and soft, reflecting a high-end sports editorial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1OIpRq9ZX0DlrGSrlBzvEvqQk2EFQ-swr7CDYyUmdiHxRBWKtkZ69iJhrlAWJxPe0j2DUz51N70dziB8Nxs22FRBzfLeXfs13tPhThew_7Fn4ZSNbZKg7PNUVPIOz4qEtsTw1U4di0k90F8jPLMd7PeVN2L2ef-drdAKcNFmWH9O86Ar-lFPtqAMDa3pFIQMTqKsb1tOLWqapCrw0y3nW4kLMoLg9njTr3lpGK2LRO1SotJ52DiZvgMaBtwwgrLUh04NQgU6C0Rmk"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="text-primary font-label-sm mb-1">SUN, JULY 15 • 05:00 AM</span>
+<h4 class="font-headline-md text-body-lg font-bold mb-1">Sunrise Bridge Run</h4>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm mb-3">
+<span class="material-symbols-outlined text-sm">location_on</span> Wacker Drive
+                        </div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1 text-xs font-medium"><span class="material-symbols-outlined text-xs">group</span> 45 Joined</span>
+<span class="flex items-center gap-1 text-xs font-medium"><span class="material-symbols-outlined text-xs">bolt</span> 8.5km</span>
+</div>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-container-lowest p-sm rounded-xl flex gap-md shadow-[0px_10px_30px_rgba(15,23,42,0.02)] border border-surface-container hover:shadow-md transition-shadow">
+<div class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Event" class="w-full h-full object-cover" data-alt="A focused runner stretching against a sleek glass skyscraper during the blue hour. The building's windows reflect the deepening blue of the sky and some city lights. The aesthetic is clean, minimalist, and very urban. The lighting is low and moody, emphasizing the quiet intensity of preparation before a workout. The color scheme is cold blues punctuated by the warm glow of interior office lights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArRmWuLn2k79dBSesuYZEuj6QMC3zbNty9Lr5xxwgvk8jQOVwf5xDkE2VEo5oWrgJKgbQAg4q3a9DVdMenE1N85ws_hS8UCD05gHtEI6sp-B5PbaI5xhrGUdTJyVFYVT5ICituGKIWFYvIPmHcjU6fc3Pl5WSsO5vgiLlPoR7CGIHywJEc_hvo2qAfuysK4mebhwm7mW2lZIa7AW-FOX6yvjvhP1dFPcuPDTbEMqnbRwFx9ylQoGIYbiPcPwoqoHkO2deZNlYHsraL"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="text-primary font-label-sm mb-1">WED, JULY 18 • 08:30 PM</span>
+<h4 class="font-headline-md text-body-lg font-bold mb-1">Midweek Tempo Drills</h4>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm mb-3">
+<span class="material-symbols-outlined text-sm">location_on</span> Millennium Park
+                        </div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1 text-xs font-medium"><span class="material-symbols-outlined text-xs">group</span> 28 Joined</span>
+<span class="flex items-center gap-1 text-xs font-medium"><span class="material-symbols-outlined text-xs">bolt</span> 5.0km</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-surface shadow-lg">
+<div class="flex justify-around items-center h-20 px-xs w-full max-w-container-max mx-auto">
+<button class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-100 active:scale-98 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</button>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clan Feed - Discover Your Tribe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "primary": "#4f378a",
+                        "on-surface": "#1d1b20",
+                        "on-primary-fixed": "#22005d",
+                        "primary-fixed": "#e9ddff",
+                        "surface": "#fdf7ff",
+                        "tertiary-fixed": "#ffdf93",
+                        "surface-container-low": "#f8f2fa",
+                        "background": "#fdf7ff",
+                        "inverse-on-surface": "#f5eff7",
+                        "surface-container-highest": "#e6e0e9",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "on-tertiary-container": "#503d00",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container": "#f2ecf4",
+                        "on-secondary-container": "#645a7d",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#e7c365",
+                        "primary-fixed-dim": "#cfbcff",
+                        "surface-container-high": "#ece6ee",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#63597c",
+                        "surface-tint": "#6750a4",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#6750a4",
+                        "on-primary-container": "#e0d2ff",
+                        "outline": "#7a7582",
+                        "on-surface-variant": "#494551",
+                        "tertiary-container": "#c9a74d",
+                        "on-secondary-fixed": "#1f1635",
+                        "surface-dim": "#ded8e0",
+                        "inverse-surface": "#322f35",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-background": "#1d1b20",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#cfbcff",
+                        "surface-bright": "#fdf7ff",
+                        "outline-variant": "#cbc4d2",
+                        "secondary-container": "#e1d4fd",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "tertiary": "#765b00",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e6e0e9",
+                        "secondary-fixed": "#e9ddff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "20px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "2rem",
+                        "xs": "0.5rem",
+                        "base": "4px",
+                        "xl": "3rem",
+                        "md": "1.5rem",
+                        "sm": "1rem",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md transition-all duration-300">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-xs text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined">location_on</span>
+<span class="font-display-lg text-headline-md font-bold text-on-surface dark:text-on-surface-variant">Select City</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32">
+<!-- Trending Clans (Horizontal Scroll) -->
+<section class="mb-xl">
+<div class="px-margin-mobile max-w-container-max mx-auto mb-md flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-headline-lg text-on-surface">Trending Clans</h2>
+<p class="text-on-surface-variant font-body-md">The communities everyone is talking about.</p>
+</div>
+</div>
+<div class="flex overflow-x-auto no-scrollbar gap-gutter px-margin-mobile snap-x snap-mandatory">
+<!-- Trending Card 1 -->
+<div class="min-w-[320px] md:min-w-[440px] snap-start">
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)] overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300">
+<div class="h-64 relative overflow-hidden">
+<img alt="Zen Masters Clan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A group of energetic young adults practicing yoga on a sun-drenched rooftop terrace during the golden hour. The aesthetic is clean and minimalist with soft purple and white tones, matching a premium fitness lifestyle brand. Warm sunlight creates long shadows and a serene, high-performance atmosphere. High-end camera quality with depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXIpfzJyFoXTDto_Mg1L1mim4kMf5VwVSlfOynf03NWTYlKK1wR2AKj64R4N4fbjmENg7Tev0FzaZhoyA7VuWH0FPFyDefbpDBwe3oYY_BN5C7mpi-7Rfvab56SOSFhqYlhCiekM7CGEc4WYMfY16DR7xqcFG7EysN4XVyKXX8OLSHNQQmUBSp_vivGv7DNWwvtMVUFCRJLO3g4uCCD4ch4t9Q-pfPSZX--guRQfdC7Nq5tjo_ooiSG5GAZZDb_6ly1awgQE8vs-at"/>
+<div class="absolute top-4 right-4 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                                Rank 1
+                            </div>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-base">
+<h3 class="font-display-lg text-headline-md text-on-surface">Zen Masters</h3>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-md">98% Happiness</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md">Admin: Elena Rossi</p>
+<div class="grid grid-cols-2 gap-md pt-md border-t border-surface-container">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Members</p>
+<p class="font-label-md">1.2k</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Events</p>
+<p class="font-label-md">12 Monthly</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Trending Card 2 -->
+<div class="min-w-[320px] md:min-w-[440px] snap-start">
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)] overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300">
+<div class="h-64 relative overflow-hidden">
+<img alt="Summit Seekers Clan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A group of hikers with modern gear standing at the peak of a misty mountain range during dawn. The cool blue and soft grey color palette reflects a sophisticated, adventurous aesthetic. The lighting is diffused and atmospheric, highlighting the rugged textures of the landscape. It captures a moment of quiet achievement and community in the wild." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuGbf_6tpYmI30NRo8OTDo0GpUSKUybh3zfQgRTvmJa8HqCkwLgMvmdtEvHIqskrR722yLTclXkTAR_VPmu6qP0j2yx8H8fGD9bESjPI6BDvQdtmYHiz2KXJiWzxqY_x5jURdPD5O14Wq54lYrgZR6iJ6_n4i71C-1RFFTRvN2WehrUsmsGOfg90fF1tk5PQCZoRlDznQ_fwIarsjjJaw21wYwi0x2s5Om9kNRBnqpThyPwnt9M5FRpd2lii59ShsLV9yBaKuiNk93"/>
+<div class="absolute top-4 right-4 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                                Rank 3
+                            </div>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-base">
+<h3 class="font-display-lg text-headline-md text-on-surface">Summit Seekers</h3>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-md">94% Happiness</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md">Admin: Marcus Thorne</p>
+<div class="grid grid-cols-2 gap-md pt-md border-t border-surface-container">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Members</p>
+<p class="font-label-md">840</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Events</p>
+<p class="font-label-md">4 Monthly</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recommended For You (Mixed Grid) -->
+<section class="mb-xl px-margin-mobile max-w-container-max mx-auto">
+<h2 class="font-display-lg text-headline-lg text-on-surface mb-md">Recommended For You</h2>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Large Featured Item -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)] overflow-hidden flex flex-col md:flex-row hover:shadow-lg transition-all duration-300">
+<div class="md:w-1/2 h-64 md:h-full relative overflow-hidden">
+<img alt="Iron Pulse Clan" class="w-full h-full object-cover" data-alt="Modern indoor high-intensity training studio with neon purple accents and industrial design. A diverse group of focused athletes are performing kettlebell swings in synchronization. The lighting is dramatic and energetic, showcasing sweat and determination. Clean, sharp lines and a high-energy vibe consistent with a refined athlete aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEQinmjO7c-awq9jyaG3py7aPH9MFye0HbKvu4_RHF-NpaZtuyN6eJVFt892D3h-GqLr_UOswfuivlXKVSNgQMVFtMg8ZJJRDOyQT7woLTe_WcaP7MCG1Fye38yJXnv3XGg3l5TZqbbgxAwYYAut3eKDKBnJFPXDcudl1Vcohb_bIZCAskObUwbrnEf6Iy-FO_0E9YOGVUzr5-WCXeGhkihyChcZmiOcCZjU35rjviVZR-zlDtlq3SUBlzK0vUPRdqH-lwvDW06t8b"/>
+</div>
+<div class="md:w-1/2 p-lg flex flex-col justify-center">
+<span class="inline-block px-3 py-1 rounded-full bg-secondary-container text-primary font-label-sm text-xs mb-md self-start">Based on your interests</span>
+<h3 class="font-display-lg text-headline-md text-on-surface mb-base">Iron Pulse Gym</h3>
+<p class="text-on-surface-variant text-body-md mb-lg">Admin: Sarah Connor</p>
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary">groups</span>
+<span class="text-label-md">2,400 Members</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-md">99%</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-full font-label-md hover:opacity-90 active:scale-95 transition-all">Join Clan</button>
+</div>
+</div>
+</div>
+<!-- Smaller Grid Item -->
+<div class="md:col-span-4 bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)] overflow-hidden hover:shadow-lg transition-all duration-300">
+<div class="h-48 relative overflow-hidden">
+<img alt="Vinyl Rebels Clan" class="w-full h-full object-cover" data-alt="A sophisticated electronic music production studio at night, filled with glowing synthesizers and high-end audio monitors. The room is bathed in deep indigo and magenta light, creating a creative and focused mood. The aesthetic is clean, tech-forward, and luxurious. It represents a professional yet leisure-focused artistic community." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEQrIbrrUQusC1_A-Lq9KDWZKTNXU8JNhxA3b17TZkokuvsU7j4zxbVoJuXu1B61c_1xZ4CN6_XmQwS-tAcP01vRnb_ot3PbOhe-F0N5xlFKw2dQg8Ccs2IVrpQGKo15JXfupHCmDvTwydKJs9EmYqTKT2GG__5WTRnZQWuYnA5Czl_LMvN_oxrw_5-UtjWejmQN133k_e7k_MficPx_8ojaavGX1y-Ix6zDB-SnzGP1wzWhuAoiH2ReJvbYWTlg5SvMyfU3YS7IYM"/>
+</div>
+<div class="p-md">
+<h3 class="font-display-lg text-body-lg font-bold text-on-surface mb-base">Vinyl Rebels</h3>
+<p class="text-on-surface-variant text-label-sm mb-md">Admin: DJ Echo</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]">workspace_premium</span>
+<span class="text-label-sm font-bold">Rank 5</span>
+</div>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-sm">88%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Nearby Clans -->
+<section class="mb-xl px-margin-mobile max-w-container-max mx-auto">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-display-lg text-headline-lg text-on-surface">Nearby Clans</h2>
+<a class="text-primary font-label-md hover:underline" href="#">View Map</a>
+</div>
+<div class="space-y-sm">
+<!-- Nearby List Item 1 -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)] hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+<img alt="Track Titans" class="w-full h-full object-cover" data-alt="A professional sprinting track with athletes in the starting blocks, captured from a low angle. The sharp morning light emphasizes the clean blue lanes and white markers. The overall mood is energetic, competitive, and highly organized, reflecting a premium athletic training environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLg1wDu2nQUEGAcAgbo9urXJnlzlivAlTba_ET7fqyhdpNInwX2sxV1LZrFTBD3h2mEz2JbkQBsHHK8wnnn3PSKO0utiICo1uWTchH9-1854EDsTjxsOKj2BHArzJ0IvfUfoFWPsIDVBSQCc90iOF5GbiPGSBZDwiPWR6IIdyn7S_B2ofFTEJAnlJP3E0p8wS701JYhlhNjwVleFrkP7baTOjQ-GT33vvKnPmI5Rvg8FU1J8lMONx98BnTlfKxFjobFKVaUxEZfFrT"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-display-lg text-body-lg font-bold text-on-surface">Track Titans</h4>
+<p class="text-on-surface-variant text-label-sm">0.8 miles away • Admin: Kevin Fast</p>
+</div>
+<div class="bg-surface-container rounded-full px-2 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-sm">92%</span>
+</div>
+</div>
+<div class="flex gap-md mt-sm">
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 120 members</span>
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_today</span> Next: Sat 8AM</span>
+</div>
+</div>
+</div>
+<!-- Nearby List Item 2 -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(15,23,42,0.04)] hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+<img alt="Forest Walkers" class="w-full h-full object-cover" data-alt="A lush green forest path with dappled sunlight filtering through tall trees. The scene is quiet and peaceful, emphasizing nature's beauty and stillness. Soft greens and warm earthy tones dominate the palette, creating a calm, restorative mood for a hiking or forest-bathing community." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzCCfCVbZhlAUR4f55bfkFPlOZsbJ6MGlrkxTc6ENelVdlpnSvI2tSFKZdyg8mAl0l2H2j3XslHpLwk9wmw9mPUopl4rl-C0RViysn34nq9QoqlkYFxb3S7APLEbX-ee6n6W5hDqwCToYemAaewC9Pq7dEH3f4GlzUwHrF-jKICxCxWQMvvI2ohETTtKGyM79UElm06J0InoB5v1rBHn0ZECmSQo1ZGFxjA6GKKxiJsNAa7HoSOp5YCXgzVv6bMIk_mXN_VIZP49k_"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-display-lg text-body-lg font-bold text-on-surface">Forest Walkers</h4>
+<p class="text-on-surface-variant text-label-sm">1.4 miles away • Admin: Jane Doe</p>
+</div>
+<div class="bg-surface-container rounded-full px-2 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-sm">96%</span>
+</div>
+</div>
+<div class="flex gap-md mt-sm">
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 45 members</span>
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_today</span> Next: Sun 10AM</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-surface dark:bg-surface-container shadow-lg">
+<div class="bg-surface shadow-[0px_-10px_30px_rgba(15,23,42,0.04)]">
+<div class="flex justify-around items-center h-20 px-xs w-full max-w-container-max mx-auto">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-100 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary" style="font-size: 32px;">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Floating Action Button (Contextual for Creating a Walk/Clan on Home) -->
+<div class="fixed bottom-24 right-6 z-40">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center scale-100 active:scale-90 transition-all">
+<span class="material-symbols-outlined text-[30px]">add</span>
+</button>
+</div>
+</body></html>

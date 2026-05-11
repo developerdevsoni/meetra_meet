@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clans - Find Your People</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "primary": "#4f378a",
+                        "on-surface": "#1d1b20",
+                        "on-primary-fixed": "#22005d",
+                        "primary-fixed": "#e9ddff",
+                        "surface": "#fdf7ff",
+                        "tertiary-fixed": "#ffdf93",
+                        "surface-container-low": "#f8f2fa",
+                        "background": "#fdf7ff",
+                        "inverse-on-surface": "#f5eff7",
+                        "surface-container-highest": "#e6e0e9",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "on-tertiary-container": "#503d00",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container": "#f2ecf4",
+                        "on-secondary-container": "#645a7d",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#e7c365",
+                        "primary-fixed-dim": "#cfbcff",
+                        "surface-container-high": "#ece6ee",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#63597c",
+                        "surface-tint": "#6750a4",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#6750a4",
+                        "on-primary-container": "#e0d2ff",
+                        "outline": "#7a7582",
+                        "on-surface-variant": "#494551",
+                        "tertiary-container": "#c9a74d",
+                        "on-secondary-fixed": "#1f1635",
+                        "surface-dim": "#ded8e0",
+                        "inverse-surface": "#322f35",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-background": "#1d1b20",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#cfbcff",
+                        "surface-bright": "#fdf7ff",
+                        "outline-variant": "#cbc4d2",
+                        "secondary-container": "#e1d4fd",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "tertiary": "#765b00",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e6e0e9",
+                        "secondary-fixed": "#e9ddff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "2rem",
+                        "xs": "0.5rem",
+                        "base": "4px",
+                        "xl": "3rem",
+                        "md": "1.5rem",
+                        "sm": "1rem",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .onboarding-gradient {
+            background: linear-gradient(180deg, rgba(253, 247, 255, 0) 0%, rgba(253, 247, 255, 0.9) 60%, #fdf7ff 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body-md text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Splash Screen Section (Initially Visible, usually managed by logic but shown as the first layout) -->
+<div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-surface transition-opacity duration-1000" id="splash-screen">
+<div class="relative flex items-center justify-center">
+<!-- Glowing background for logo -->
+<div class="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150"></div>
+<div class="relative w-24 h-24 bg-primary rounded-[32px] flex items-center justify-center shadow-xl">
+<span class="material-symbols-outlined text-on-primary !text-[48px]" style="font-variation-settings: 'FILL' 1;">groups_3</span>
+</div>
+</div>
+<div class="mt-8 text-center">
+<h1 class="font-display-lg text-display-lg text-primary">Clans</h1>
+<p class="text-on-surface-variant font-label-md mt-2 tracking-widest">REAL WORLD CONNECTION</p>
+</div>
+</div>
+<!-- Onboarding Container -->
+<main class="relative h-screen w-full overflow-hidden flex flex-col lg:flex-row">
+<!-- Background Imagery Slider (Visual only simulation) -->
+<div class="absolute inset-0 w-full h-full lg:w-1/2">
+<!-- Active Slide Image -->
+<div class="w-full h-full bg-cover bg-center transition-all duration-700 brightness-95" data-alt="A cinematic medium shot of a diverse group of hikers laughing and trekking up a lush, sun-drenched mountain trail during the golden hour. The lighting is warm and organic, highlighting the vibrant greens of the foliage and the energetic, community-driven mood. The style is premium and editorial, capturing a moment of genuine human connection in the great outdoors against a backdrop of soft blue peaks." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0blxJ3RQgJbUDjxosBQtTDoGz-0iDds8bt1y3KYDzb6cKj1j_KbGGgSzIRBuyZ2O2I00akUveTCrf3NGX-uGZ-neZEyvZnQsVmJpf-7gb3YuMhWytqFrWETxlYMRZPEHJcMxHyTnJjMbhYSAWY1tsbVNJyB9dmmn9kt9a1ON5rIg4_SWF0ITfuk43McKTr3ONJjNu2xr03AuAtgDlDTIuxkg2Kga2OiJbrUmn1vZqX55ssABTYfLsrQNYfHyV9M0RHctKW-oaZsbR')">
+</div>
+<!-- Overlay for text legibility on mobile -->
+<div class="absolute inset-0 onboarding-gradient lg:hidden"></div>
+</div>
+<!-- Content Canvas -->
+<div class="relative z-10 mt-auto lg:mt-0 flex-1 flex flex-col justify-end lg:justify-center px-margin-mobile lg:px-24 pb-12 lg:pb-0 bg-surface/80 lg:bg-surface backdrop-blur-xl lg:backdrop-blur-none lg:w-1/2 ml-auto">
+<div class="max-w-md mx-auto lg:mx-0 w-full space-y-8">
+<!-- Progress Indicators -->
+<div class="flex gap-2">
+<div class="h-1.5 w-12 bg-primary rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-container-highest rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- Narrative -->
+<div class="space-y-4">
+<h2 class="font-headline-lg text-headline-lg lg:text-display-lg text-on-surface leading-tight">
+                        Find your people
+                    </h2>
+<p class="text-on-surface-variant text-body-lg">
+                        Clans is where interests become communities. Discover active groups that match your passion for adventure and leisure.
+                    </p>
+</div>
+<!-- Feature Highlighting (Bento Style Preview) -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-2xl flex flex-col gap-3">
+<div class="w-10 h-10 bg-primary-fixed rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Join clans</p>
+<p class="text-xs text-on-surface-variant">Niche interest groups</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl flex flex-col gap-3">
+<div class="w-10 h-10 bg-tertiary-fixed rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Events</p>
+<p class="text-xs text-on-surface-variant">Real-world meetups</p>
+</div>
+</div>
+</div>
+<!-- Action Shell -->
+<div class="flex flex-col gap-4 pt-4">
+<button class="bg-primary text-on-primary h-14 rounded-full font-label-md flex items-center justify-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95 shadow-lg shadow-primary/20">
+                        Get Started
+                        <span class="material-symbols-outlined !text-[20px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-1 py-2">
+<span class="text-on-surface-variant font-label-sm">Already have an account?</span>
+<button class="text-primary font-label-md hover:underline decoration-2 underline-offset-4">Log in</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Hidden Layout: Preview of the 'Attend Events' slide -->
+<div class="hidden">
+<img data-alt="A vibrant, energetic social gathering at a modern, open-air urban terrace during twilight. A diverse group of young adults are cheering and engaged in conversation, lit by warm string lights and the soft glow of a nearby city skyline. The atmosphere is social, lively, and inclusive, reflecting the premium athletic leisure aesthetic of the brand with high-contrast shadows and a clean, airy feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDidt1DydTwBLTENW_5jUQhAF24SQGwhINc8uauMRkz_b7G71Tx9pMHFmqir0EZtNHiBR_rrNahY0Qk0AXQ-RvJBEXReCeObqW0c-2QcDEbba60s1x94qfQ_zhd2DvE_A1nE59WxEj6sT3DFfbq2DxlfkobbHXNdTtvgtLxSIIBTNZ4_cZNKC-pPkzTWGMON9XxzmLHpOmzdgmaBgBRiQ-cqJsvnPlEjkqP7TJ2dqycFUukU2UDZG2Eu0by6me3HhsNglkzaqGELoiw"/>
+<img data-alt="A focused group of five creative professionals collaborating in a bright, minimalist studio space filled with plants and natural light. They are standing around a large wooden table with sketches and tablets, demonstrating teamwork and community. The aesthetic is clean and serene with an off-white color palette and soft primary-colored accents, capturing the essence of shared interests and 'clans'." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl3S1ZRRZmycshNuCi3vBwyuavuu_ijhKh9apY5YfCXz4p-ptNcItqTklX9s8BnQPhEkkpeNCuNaS806jp1SDDtyF_09ntno9LDatjUMdF3NehkCByjJwcWh25N4izIWdUDd5qBTkE_efgEXI7pFdkV4CwX0evuqrRktn6Ay6hs3l5gLUo8bGrRVPW8SA6zaDHnFJmzx7Yux3c2TtBCtg4Tyn9dvF7lrute5wiLgWFhJ9XUmI8JjHhOiOX5Wvm88u9YJXZavuln_gz"/>
+</div>
+<!-- UI Interaction Script (Visual presentation only, no functional JS required as per prompt instructions, but including comments to explain the layout flow) -->
+<!-- The Splash Screen is fixed at the top and would typically be removed after a delay to reveal the onboarding slides. -->
+</body></html>

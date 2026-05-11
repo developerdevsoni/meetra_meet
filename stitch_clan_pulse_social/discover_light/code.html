@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "primary": "#4f378a",
+                        "on-surface": "#1d1b20",
+                        "on-primary-fixed": "#22005d",
+                        "primary-fixed": "#e9ddff",
+                        "surface": "#fdf7ff",
+                        "tertiary-fixed": "#ffdf93",
+                        "surface-container-low": "#f8f2fa",
+                        "background": "#fdf7ff",
+                        "inverse-on-surface": "#f5eff7",
+                        "surface-container-highest": "#e6e0e9",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "on-tertiary-container": "#503d00",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container": "#f2ecf4",
+                        "on-secondary-container": "#645a7d",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#e7c365",
+                        "primary-fixed-dim": "#cfbcff",
+                        "surface-container-high": "#ece6ee",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#63597c",
+                        "surface-tint": "#6750a4",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#6750a4",
+                        "on-primary-container": "#e0d2ff",
+                        "outline": "#7a7582",
+                        "on-surface-variant": "#494551",
+                        "tertiary-container": "#c9a74d",
+                        "on-secondary-fixed": "#1f1635",
+                        "surface-dim": "#ded8e0",
+                        "inverse-surface": "#322f35",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-background": "#1d1b20",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#cfbcff",
+                        "surface-bright": "#fdf7ff",
+                        "outline-variant": "#cbc4d2",
+                        "secondary-container": "#e1d4fd",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "tertiary": "#765b00",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e6e0e9",
+                        "secondary-fixed": "#e9ddff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "2rem",
+                        "xs": "0.5rem",
+                        "base": "4px",
+                        "xl": "3rem",
+                        "md": "1.5rem",
+                        "sm": "1rem",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 16px;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 16px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-24">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md transition-all duration-300">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+<h1 class="font-display-lg text-headline-md font-bold text-on-surface">Select City</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile max-w-container-max mx-auto">
+<!-- Search Section -->
+<section class="mt-4 mb-8">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-surface-container border-none rounded-full focus:ring-2 focus:ring-primary/20 text-body-md shadow-[0px_10px_30px_rgba(15,23,42,0.04)] transition-all" placeholder="Explore clans, events, or hobbies..." type="text"/>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="mb-10 overflow-x-auto hide-scrollbar -mx-margin-mobile px-margin-mobile">
+<div class="flex gap-3 pb-2">
+<!-- Location Filter -->
+<button class="flex items-center gap-2 px-5 py-2.5 bg-primary-container text-on-primary-container rounded-full font-label-md transition-all whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]" data-icon="near_me">near_me</span>
+<span>San Francisco</span>
+</button>
+<!-- Category Filters -->
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full font-label-md hover:bg-secondary-container transition-all whitespace-nowrap">
+<span>Hiking</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full font-label-md hover:bg-secondary-container transition-all whitespace-nowrap">
+<span>Sports</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full font-label-md hover:bg-secondary-container transition-all whitespace-nowrap">
+<span>Tech</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full font-label-md hover:bg-secondary-container transition-all whitespace-nowrap">
+<span>Social</span>
+</button>
+<!-- Type Divider -->
+<div class="w-px h-8 bg-outline-variant mx-1 self-center"></div>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full font-label-md hover:bg-secondary-container transition-all whitespace-nowrap">
+<span>Free</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full font-label-md hover:bg-secondary-container transition-all whitespace-nowrap">
+<span>Paid</span>
+</button>
+</div>
+</section>
+<!-- Results: Masonry Grid -->
+<section class="masonry-grid">
+<!-- Item 1: Large Featured -->
+<div class="masonry-item bg-white rounded-[20px] overflow-hidden shadow-[0px_10px_30px_rgba(15,23,42,0.04)] group cursor-pointer">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A group of diverse hikers reaching a mountain summit at sunrise. The golden hour lighting illuminates their joyful expressions and the misty valley below. The aesthetic is clean, adventurous, and high-performance, consistent with a premium outdoor fitness brand. Rich purples and soft oranges dominate the sky." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRfs77ujw-RS-ZfBaFeyir-PJT6weCAfA3r5SeBP8QYgj0tp2y4qd0j5WR-zp_v5L2fFmwmF6W5RyNn_BXQBkhq8u_Ua3OxnqwyQgiDuwAia8v9jxJClZ7hsZQidLsJWL7DsCAtiFgjYpAy68n9xvZhywJbl3Tyw4jFF1dJJpqLydYAzbOMZbncCUEn7iP9OTXEvM58QcQtH80FaFVSmxzUdwVETV4Fd9HEqEasoJEVWjhuF2SpozaNlGO9cXQIIZuxbYA-_W0p36r"/>
+<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold">
+                        FEATURED
+                    </div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-display-lg text-headline-md leading-tight text-on-surface">Peak Pursuers</h3>
+<span class="text-tertiary font-bold text-label-md">Free</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-4">Weekly summit hikes and trail runs for high-energy explorers.</p>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]" data-icon="groups">groups</span>
+<span class="text-label-sm">1.2k members</span>
+</div>
+<div class="flex items-center gap-1 text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]" data-icon="bolt">bolt</span>
+<span class="text-label-sm">High Intensity</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 2: Small Tech -->
+<div class="masonry-item bg-white rounded-[20px] overflow-hidden shadow-[0px_10px_30px_rgba(15,23,42,0.04)] group cursor-pointer">
+<div class="relative h-40 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sleek, minimalist home office setup with dual monitors showing lines of code. The lighting is soft blue and atmospheric, reflecting a focused tech environment. Clean lines, metallic surfaces, and a sense of calm productivity define the scene. The overall mood is modern and intellectually stimulating." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-Vn0f6O0ODHs27CBwqeVlYmx-PsESw0nMS8PF1E6Epi8U6M0Z2Ar-E6o2L7fdZD9si2_hBy7HinovkG5av0rC7wN_p1mINDNxNrbOZPS5nwbuOJhntZ_4OOuN4k3GdAtjSyQQRzLJvdrGNCXOB5abCku4sb03iRBVCAds-666pkXUu8TIBNgLrH9eWrla8zzVvCBmwTyolVG-ca4rXKwpp2MtaWfTSuzOwW0dTndYNLXQjpFu-74tXwh_DNBznjP5CpBusWlax3Od"/>
+</div>
+<div class="p-5">
+<h3 class="font-display-lg text-body-lg font-bold mb-2 text-on-surface">Code &amp; Coffee</h3>
+<div class="flex items-center gap-2 mb-3">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-[10px] font-bold uppercase tracking-wider">Tech</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-highest"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container"></div>
+</div>
+<span class="text-label-sm text-on-surface-variant">+42 more</span>
+</div>
+</div>
+</div>
+<!-- Item 3: Medium Social -->
+<div class="masonry-item bg-white rounded-[20px] overflow-hidden shadow-[0px_10px_30px_rgba(15,23,42,0.04)] group cursor-pointer">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A trendy rooftop social gathering at dusk. People are laughing and talking under warm string lights. The city skyline glows in the background with a palette of deep navy and soft violet. The vibe is sophisticated, hospitable, and community-focused, mimicking an Airbnb luxury experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGAB9B--fsh4SlXiB-lYQldHapxJFBAuc01Meg5p67SfnvYw2eU7-IKev_RJCt5cIVHn28x17ry2WLZqcqsbLLYmEYFb5_uyCImce8eQ5Pz4dydoyd76cBUqr1JGXlu2ee8lJJXf8Quosz2My1pujvKQSV6e9SyzSaXQQ6sZxzonRrWjSN7ctNiAIS-Q9Qoh6VpdjAvBOU5n6eNYSob66E1_qpHgth88XLM66-ro6jaKueDB2rWZYQ7778dukvIcSVSVcSCWB7JmYl"/>
+<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md text-primary px-3 py-1 rounded-full text-label-sm font-bold">
+                        $15 / event
+                    </div>
+</div>
+<div class="p-6">
+<h3 class="font-display-lg text-headline-md mb-2 text-on-surface">Urban Mixers</h3>
+<p class="text-on-surface-variant text-body-md mb-4 italic">"Where locals become friends."</p>
+<div class="flex items-center gap-4 text-on-secondary-container">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+<span class="text-label-sm">Every Friday</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 4: Small Sports -->
+<div class="masonry-item bg-white rounded-[20px] overflow-hidden shadow-[0px_10px_30px_rgba(15,23,42,0.04)] group cursor-pointer">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close-up action shot of a professional tennis serve on a bright blue court. The sunlight creates sharp shadows and highlights the kinetic energy of the motion. The scene is vibrant, high-contrast, and energetic, focusing on the refined athleticism of the sport. Primary blues and crisp whites dominate the frame." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAECP8QLSPeV1OHZTgbneB0hwWXRRduN8f_DaOycnug1qO7QcMfUE5_xm2qTzHUtulTYytw70dDju5s8m00fJUWpQ8IqOItQInpJmlzu7LNoydAeVQ9N4QCAzmNeTKhJjh5lMusg5LH8cmDmkVfe8iaD2rZwXHVK2hzfWOMXL0BVqq0sGGcaXvlETRgHuujyN69NAE2YaJYm2L-5DJIpIJfz7KoWhsaUI2QFlnx2f8uesAaDm8Mcc4q5FyOCbSFj-993Y1oCjwlBE6I"/>
+</div>
+<div class="p-5">
+<h3 class="font-display-lg text-body-lg font-bold mb-1 text-on-surface">Court Kings</h3>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="verified">verified</span>
+<span class="text-label-sm text-on-surface-variant">Pro League</span>
+</div>
+<button class="w-full py-2 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary/90 active:scale-[0.98] transition-all">Join Clan</button>
+</div>
+</div>
+<!-- Item 5: Medium Creative -->
+<div class="masonry-item bg-white rounded-[20px] overflow-hidden shadow-[0px_10px_30px_rgba(15,23,42,0.04)] group cursor-pointer">
+<div class="p-6 bg-tertiary-container/10">
+<div class="w-12 h-12 bg-tertiary-container text-on-tertiary-container rounded-2xl flex items-center justify-center mb-4">
+<span class="material-symbols-outlined" data-icon="palette">palette</span>
+</div>
+<h3 class="font-display-lg text-headline-md mb-2 text-on-surface">Design Studio</h3>
+<p class="text-on-surface-variant text-body-md mb-6">Monthly workshops for digital creators and visual storytellers.</p>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 bg-white rounded-full text-label-sm font-medium shadow-sm">Workshop</span>
+<span class="px-3 py-1 bg-white rounded-full text-label-sm font-medium shadow-sm">Online</span>
+</div>
+</div>
+<div class="relative h-40 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An abstract 3D digital art composition featuring flowing silk textures in iridescent shades of purple and teal. The lighting is ethereal and soft, creating a sense of futuristic calm. The visual style is premium and avant-garde, emphasizing texture and fluid movement in a minimalist void." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVai-2XIaGsKXQLju53seYUoP4kLImIh5Q-PZsqiPkd2E26O0fYO2PXkU9VZfFbm0jAjUwUteK9U2_XCXrrq0moNytP1QIQsvyrKaLl-bT6kkEpK0fOxueZc8Lkr0oi9tUL4R8QolQLG1XdDYfAaTGSBcVetGfsQy80_adiJ2p-FHBBE9CWrZUVjS2UHuYfjVy-GTQ9mPXqdzVQzPra5lvXL3tpTMnUFazTa7PeV_vUK3Q2SVo4nRH4giwl28-ikmAB0Y5a-IWuPFs"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-surface shadow-lg">
+<div class="flex justify-around items-center h-20 px-xs w-full max-w-container-max mx-auto">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined transition-transform duration-200 group-active:scale-90" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<!-- Discover (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-2 scale-100 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-sm text-label-sm mt-0.5">Discover</span>
+</a>
+<!-- Create -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined transition-transform duration-200 group-active:scale-90" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-label-sm mt-1">Create</span>
+</a>
+<!-- Chat -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors group relative" href="#">
+<span class="material-symbols-outlined transition-transform duration-200 group-active:scale-90" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-sm text-label-sm mt-1">Chat</span>
+<div class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-surface"></div>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined transition-transform duration-200 group-active:scale-90" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Floating Action Button Contextual Suppression check: Only on appropriate screens. Shown here for Discover flow -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center scale-100 active:scale-90 transition-all z-40">
+<span class="material-symbols-outlined text-[28px]" data-icon="map">map</span>
+</button>
+</body></html>

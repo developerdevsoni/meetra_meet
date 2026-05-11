@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "primary": "#4f378a",
+                    "on-surface": "#1d1b20",
+                    "on-primary-fixed": "#22005d",
+                    "primary-fixed": "#e9ddff",
+                    "surface": "#fdf7ff",
+                    "tertiary-fixed": "#ffdf93",
+                    "surface-container-low": "#f8f2fa",
+                    "background": "#fdf7ff",
+                    "inverse-on-surface": "#f5eff7",
+                    "surface-container-highest": "#e6e0e9",
+                    "secondary-fixed-dim": "#cdc0e9",
+                    "on-tertiary-container": "#503d00",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#4b4263",
+                    "on-tertiary-fixed": "#241a00",
+                    "surface-container": "#f2ecf4",
+                    "on-secondary-container": "#645a7d",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#e7c365",
+                    "primary-fixed-dim": "#cfbcff",
+                    "surface-container-high": "#ece6ee",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#63597c",
+                    "surface-tint": "#6750a4",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#6750a4",
+                    "on-primary-container": "#e0d2ff",
+                    "outline": "#7a7582",
+                    "on-surface-variant": "#494551",
+                    "tertiary-container": "#c9a74d",
+                    "on-secondary-fixed": "#1f1635",
+                    "surface-dim": "#ded8e0",
+                    "inverse-surface": "#322f35",
+                    "on-tertiary-fixed-variant": "#594400",
+                    "on-background": "#1d1b20",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#cfbcff",
+                    "surface-bright": "#fdf7ff",
+                    "outline-variant": "#cbc4d2",
+                    "secondary-container": "#e1d4fd",
+                    "on-primary-fixed-variant": "#4f378a",
+                    "tertiary": "#765b00",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e6e0e9",
+                    "secondary-fixed": "#e9ddff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "2rem",
+                    "xs": "0.5rem",
+                    "base": "4px",
+                    "xl": "3rem",
+                    "md": "1.5rem",
+                    "sm": "1rem",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md transition-all duration-300">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="location_on">location_on</span>
+<h1 class="font-display-lg text-headline-md font-bold text-on-surface">Select City</h1>
+</div>
+<button class="hover:bg-surface-container-high transition-colors p-2 rounded-full scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-16 pb-20 max-w-container-max mx-auto min-h-screen flex flex-col md:flex-row bg-surface">
+<!-- Sidebar / Message List -->
+<aside class="w-full md:w-[400px] border-r border-outline-variant flex flex-col bg-surface-container-lowest">
+<!-- Search & Filters -->
+<div class="p-md space-y-md">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary/20 transition-all font-label-md text-on-surface" placeholder="Search chats..." type="text"/>
+</div>
+<div class="flex gap-xs overflow-x-auto hide-scrollbar">
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-full font-label-md shrink-0">All</button>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-md shrink-0 hover:bg-surface-container-highest transition-colors">Clans</button>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-md shrink-0 hover:bg-surface-container-highest transition-colors">Direct</button>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-md shrink-0 hover:bg-surface-container-highest transition-colors">Unread</button>
+</div>
+</div>
+<!-- List of Chats -->
+<div class="flex-1 overflow-y-auto">
+<!-- Clan Chat (Active) -->
+<div class="px-md py-4 flex items-center gap-md bg-secondary-container/30 cursor-pointer border-l-4 border-primary">
+<div class="relative shrink-0">
+<div class="w-14 h-14 rounded-2xl overflow-hidden bg-primary-fixed flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="A diverse group of athletic friends laughing together in an outdoor park setting, wearing high-performance vibrant sportswear. The lighting is soft morning golden hour, creating a warm, community-focused energy that feels organic and premium. The composition is tight, focusing on their authentic expressions of joy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQamE6fKOfUea1f9qzDVPl7aBzMpg3LLaerOVmpn1dtoTzRvSBhHQZmCJxR4e61CSLF9qIyFtefNOh-KR3hqQW4UEwa30tj3pHSjKXQ8BJi-LIFlRgfzJUoiPKtDiMULJCHgA5KPrqXs7BZeg_wIpNxy7BM6lSBJbfQAhUsGqVNfA_3iSn_TOIns1RqeE1sNtZ9qAOe45WZIlnb7WKODX_0G1u7-7Kr4UCIvuFz7mCcdyR3sOjDpLE8mvpoIkup8q37Y42uiGcJMtu"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-tertiary border-4 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-headline-md text-body-md font-bold text-on-surface truncate">Midnight Runners Peak</h3>
+<span class="font-label-sm text-xs text-outline">10:42 AM</span>
+</div>
+<p class="font-body-md text-sm text-primary font-semibold truncate">Alex: See you all at the trailhead!</p>
+</div>
+</div>
+<!-- Direct Message -->
+<div class="px-md py-4 flex items-center gap-md hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="relative shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden bg-secondary-fixed">
+<img class="w-full h-full object-cover" data-alt="A portrait of a young woman with a focused, athletic gaze, styled in minimalist high-end activewear. The background is a clean, neutral studio setting with soft ambient lighting that highlights her features. The color palette is composed of muted tones and subtle highlights, conveying a sense of refined performance and serene confidence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhsiGRG4UFSjLZNd3jG4fL5vgrlZTbJt2q_kafY0UzyhGH533vz9TxQakfJhmKE-Lh2MzeJmngEJkrk_3zYhvO94gsmN5851hTAr0rP13rwAr3RA5Saz2CaLRRedfJazTWi1UGgObDESsEdZDHGsU7C8a1ghQ0OhPbLFir8bvqZKbTMntdeVUd_EaGn3yFP_OQHjIUwepN9YpydZfM7uljxlIg9bS1Ej3Y10o-u0SUjrja1JpSyTXXp5up-uEtkoWONltmBa98DN9B"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-4 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-headline-md text-body-md text-on-surface truncate">Sarah Jenkins</h3>
+<span class="font-label-sm text-xs text-outline">Yesterday</span>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant truncate">That pace was incredible today!</p>
+</div>
+</div>
+<!-- Clan Chat -->
+<div class="px-md py-4 flex items-center gap-md hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="relative shrink-0">
+<div class="w-14 h-14 rounded-2xl overflow-hidden bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-2xl" data-icon="groups">groups</span>
+</div>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-outline-variant border-4 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-headline-md text-body-md text-on-surface truncate">Yoga Flow Collective</h3>
+<span class="font-label-sm text-xs text-outline">Mon</span>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant truncate">New session added for Saturday morning.</p>
+</div>
+</div>
+<!-- Direct Message -->
+<div class="px-md py-4 flex items-center gap-md hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="relative shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden bg-secondary-fixed">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a cheerful man in his late 20s, featuring a natural and friendly smile. He is outdoors in a bright, modern architectural space with clean lines and soft daylight. The overall aesthetic is breathable and light, utilizing a professional photography style with a shallow depth of field to keep the focus purely on the subject." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCtTW3bCV5kUOKUM-dFt9gyxklTJa6k9dLsJaP6vHX8grt0OISn3mqC5_OncBaWI7Vdv7HThWK_eb2nY__5DHLCUWpoRWqNpCK9xD1cOWHVs0wMbDe36vLSad6lDMiJZZ7pYrH4sV5Gham7Ct0IsXfqItiJ1ZYQK_tFsA8U0DLq0qHJd5r9SiBNGQV9Hz8R6HJl-mOfaj1EB2gegHNkXtnUgbQv0XZ7cqwIU9NAwpfLOSS9C4zwalvsib_F_vAhw6MiWjUB_1cVBwf"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-outline-variant border-4 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-headline-md text-body-md text-on-surface truncate">Marcus Chen</h3>
+<span class="font-label-sm text-xs text-outline">Sun</span>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant truncate">Sent a photo</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Message UI Area -->
+<section class="hidden md:flex flex-1 flex-col bg-surface-container-low relative">
+<!-- Chat Header -->
+<div class="h-16 px-md border-b border-outline-variant flex items-center justify-between bg-surface/40 backdrop-blur-sm sticky top-0 z-10">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-xl overflow-hidden bg-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A vibrant, cinematic shot of a diverse urban running club gathering at dusk under modern city lights. The scene is filled with high-performance athletic energy, featuring sleek sportswear and glowing wearable tech. The lighting is dynamic, with cool blue ambient tones and warm highlights reflecting off the participants' joyful faces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdFRloCxkeEJQeklYlxrAjagMW_V85uW8KRAtmVK03IQZzJgwSjD5BTIiKdgC2Lq214_y33P2oQC6D8Z_oZVOmfhhVPoQOwWax1fZn3bMNkktAa_ZiQ0lGLo1UO_vz34xZ3GbETi1FqMlEJTt1dY5fvCgVckvQt_z0DdBZzX3gyIpfkMCDo9agWwUlxtr8cpZjZxG3FJaZqxlVmVj7oEIYpyjUWk-3sqyr8GX_DhS3K4jcyjKZrsqgbGMifznOO8eHDVFyi8mhEbb-"/>
+</div>
+<div>
+<h2 class="font-headline-md text-body-md font-bold text-on-surface leading-tight">Midnight Runners Peak</h2>
+<span class="font-label-sm text-[10px] text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> 12 Active Members
+                        </span>
+</div>
+</div>
+<div class="flex gap-xs">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="videocam">videocam</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="info">info</span>
+</button>
+</div>
+</div>
+<!-- Messages Stream -->
+<div class="flex-1 overflow-y-auto p-lg space-y-lg flex flex-col">
+<!-- Date Separator -->
+<div class="flex justify-center">
+<span class="px-4 py-1 bg-surface-container-highest/50 rounded-full font-label-sm text-xs text-outline-variant uppercase tracking-wider">Today</span>
+</div>
+<!-- Recipient Message -->
+<div class="flex gap-sm max-w-[80%]">
+<div class="w-8 h-8 rounded-full overflow-hidden mt-1 shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close up avatar of a young athletic woman with a friendly and energetic expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqx1vAaFjIV6ooodVr_l15FeJdHkkoXRAof1lyHfMqiibdAkiWfP5Z8vSQce71A4aW7Zi5lJPkJPvwjIOA1_o-B1V0Opu1CEP_2xEd02UPHbnVdIUNfQS7saybh5IHVBolvYnajHrqULUpehIjeQ-B_Hl5vs3uuyOemzDZ1AJV3V6enhe_pm84lUIZXIFiS-pnFxRrBQiGn4zU8c8CvNj_9N6H8bXOoNr6MmD6LLH9edAHBI09MSW3uSx_cIVDGzDsAtkLMllJRa0T"/>
+</div>
+<div class="space-y-1">
+<span class="font-label-sm text-xs text-on-surface-variant ml-2">Sarah Jenkins</span>
+<div class="bg-surface-container-lowest p-4 rounded-2xl rounded-tl-none shadow-[0px_2px_10px_rgba(15,23,42,0.02)]">
+<p class="font-body-md text-on-surface">Hey everyone! Is the meetup still happening at the North Entrance at 6:00 PM?</p>
+</div>
+<span class="font-label-sm text-[10px] text-outline ml-2">10:30 AM</span>
+</div>
+</div>
+<!-- Recipient Message with Image -->
+<div class="flex gap-sm max-w-[80%]">
+<div class="w-8 h-8 rounded-full overflow-hidden mt-1 shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close up avatar of a young athletic man smiling warmly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI_8jYizifkp1IP_b2ha5Uo4d0H0aybT2FWKNPhvq96gvQOJvVczzo3AAzfQlp0NvSUgsrSK5PX67mnqwEIv6Z_bw6zLWfz9pBIEH-BnPqWnzBMRknGc2PfsXDjHdqakMivRvyYtNSKMFs9yKO6VO5wYm2zK1hq81Fbm3UO7SWnzzQSIoSnZfqY_HoBnm8lirPynIwqmrYjM-uQJ99OYecJTx0v_ZjaAsjXwA97hsE7vfDlaEkz2bG7Yzidg_qpBzW_btcGlHtjI6c"/>
+</div>
+<div class="space-y-1">
+<span class="font-label-sm text-xs text-on-surface-variant ml-2">Marcus Chen</span>
+<div class="bg-surface-container-lowest p-2 rounded-2xl rounded-tl-none shadow-[0px_2px_10px_rgba(15,23,42,0.02)]">
+<div class="rounded-xl overflow-hidden mb-2">
+<img class="w-full h-64 object-cover" data-alt="A wide-angle landscape shot of a scenic urban running path during sunrise. The trail is surrounded by lush green trees and modern architectural structures, bathed in a soft purple and pink morning glow. The atmosphere is peaceful, pristine, and motivating, embodying a high-end wellness and leisure aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLSJwue2rxo1WVzYjTObzXeABM3fUH1_uUM_tjbu1izKLDIqrrZ7yWF8meir1lZ-IFIjasaFSa7xVRwMWhXnJjg6-tCYGRz4klCEyExDPT6Yky-t92nMMJQMFKovPOXsMF5EbkBPWzbZOq665P7oN6gOolhJLQT26CQQkFntpfJVPvZyWb1UC7MAikUMWmJwISAv3BKKYrjhrZy63x8hxX79I6_RHEtgaPbhY314pnrzZfTURTh1w-a3m_cpfP9juD_1FzmNSE8EvM"/>
+</div>
+<p class="font-body-md text-on-surface px-2 pb-2">Check out the trail condition! It's perfect today.</p>
+</div>
+<span class="font-label-sm text-[10px] text-outline ml-2">10:35 AM</span>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex flex-row-reverse gap-sm max-w-[80%] self-end">
+<div class="space-y-1 items-end flex flex-col">
+<div class="bg-primary text-on-primary p-4 rounded-2xl rounded-tr-none shadow-lg">
+<p class="font-body-md">I'm on my way! Just grabbed some extra hydration packs for the group. 🏃‍♂️💨</p>
+</div>
+<div class="flex items-center gap-1 mt-1 mr-2">
+<span class="font-label-sm text-[10px] text-outline">10:40 AM</span>
+<span class="material-symbols-outlined text-[12px] text-primary" data-icon="done_all">done_all</span>
+</div>
+</div>
+</div>
+<!-- Latest Message -->
+<div class="flex gap-sm max-w-[80%]">
+<div class="w-8 h-8 rounded-full overflow-hidden mt-1 shrink-0 bg-primary-fixed flex items-center justify-center">
+<span class="font-bold text-xs text-primary">A</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-sm text-xs text-on-surface-variant ml-2">Alex (Admin)</span>
+<div class="bg-surface-container-lowest p-4 rounded-2xl rounded-tl-none shadow-[0px_2px_10px_rgba(15,23,42,0.02)] border-l-4 border-tertiary">
+<p class="font-body-md text-on-surface">See you all at the trailhead! Let's aim for a sub-25min pace today.</p>
+</div>
+<span class="font-label-sm text-[10px] text-outline ml-2">10:42 AM</span>
+</div>
+</div>
+</div>
+<!-- Message Controls -->
+<div class="p-md bg-surface/60 backdrop-blur-md">
+<div class="flex items-end gap-sm bg-surface-container-lowest border border-outline-variant rounded-2xl p-2 shadow-sm focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container transition-colors shrink-0">
+<span class="material-symbols-outlined text-outline" data-icon="add_circle">add_circle</span>
+</button>
+<textarea class="flex-1 py-2 px-2 bg-transparent border-none focus:ring-0 resize-none min-h-[40px] max-h-32 font-body-md text-on-surface" placeholder="Message Midnight Runners Peak..." rows="1"></textarea>
+<div class="flex items-center gap-xs pb-1 pr-1 shrink-0">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-outline" data-icon="mood">mood</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-on-primary shadow-md hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 w-full rounded-t-xl z-50 bg-surface shadow-[0px_-10px_30px_rgba(15,23,42,0.04)]">
+<div class="flex justify-around items-center h-20 px-xs w-full">
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<!-- Chat is Active -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-100 active:scale-98" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors scale-100 active:scale-98" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

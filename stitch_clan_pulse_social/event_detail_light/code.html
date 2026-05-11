@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Event Details - Select City</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "primary": "#4f378a",
+                        "on-surface": "#1d1b20",
+                        "on-primary-fixed": "#22005d",
+                        "primary-fixed": "#e9ddff",
+                        "surface": "#fdf7ff",
+                        "tertiary-fixed": "#ffdf93",
+                        "surface-container-low": "#f8f2fa",
+                        "background": "#fdf7ff",
+                        "inverse-on-surface": "#f5eff7",
+                        "surface-container-highest": "#e6e0e9",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "on-tertiary-container": "#503d00",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container": "#f2ecf4",
+                        "on-secondary-container": "#645a7d",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#e7c365",
+                        "primary-fixed-dim": "#cfbcff",
+                        "surface-container-high": "#ece6ee",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#63597c",
+                        "surface-tint": "#6750a4",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#6750a4",
+                        "on-primary-container": "#e0d2ff",
+                        "outline": "#7a7582",
+                        "on-surface-variant": "#494551",
+                        "tertiary-container": "#c9a74d",
+                        "on-secondary-fixed": "#1f1635",
+                        "surface-dim": "#ded8e0",
+                        "inverse-surface": "#322f35",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-background": "#1d1b20",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#cfbcff",
+                        "surface-bright": "#fdf7ff",
+                        "outline-variant": "#cbc4d2",
+                        "secondary-container": "#e1d4fd",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "tertiary": "#765b00",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e6e0e9",
+                        "secondary-fixed": "#e9ddff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "2rem",
+                        "xs": "0.5rem",
+                        "base": "4px",
+                        "xl": "3rem",
+                        "md": "1.5rem",
+                        "sm": "1rem",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .avatar-stack > *:not(:first-child) { margin-left: -12px; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased mb-24">
+<!-- Top Navigation -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md transition-all duration-300">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+<h1 class="font-display-lg text-headline-md font-bold text-on-surface">Select City</h1>
+</div>
+<button class="hover:bg-surface-container-high transition-colors scale-95 active:scale-90 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<main class="pt-16 max-w-container-max mx-auto">
+<!-- Hero Section -->
+<section class="relative w-full aspect-[16/10] md:aspect-[21/9] overflow-hidden">
+<img alt="Event Hero" class="w-full h-full object-cover" data-alt="A wide-angle shot of a premium, sun-drenched architectural garden pavilion filled with young professionals networking in a relaxed, minimalist environment. The scene is bathed in soft, natural morning light with high-key whites and soft lavender tones throughout. The aesthetic is clean, sophisticated, and community-focused, reflecting an air of exclusive yet approachable leisure. Modern glass elements reflect the clear blue sky and lush greenery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpsQWB9jVlEyojOE_qMKrQmzKRsqSe1myKl87ARF_MMFnvAK1_s91HQtQ87wVoN8iH3RZr67da427zeMLMEkvQGzscp-aIsgYiE6R_xgIHUBc-gGnKg4bph1WiDBFvmwoCXyux6AF7DAigSiZtEZH66BDd_MLnfJXHFKDmRAAPUqGylNPBCYz8exUF-Axlz8kvy4JNos50_FIG57j1XDF1i1PoxaTxRKaxtiZYQ3w-Tr_tmkYDihK7E4XxvVYRxHiUAasWUMZ9FG4z"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<button class="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg scale-100 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-on-surface" data-icon="arrow_back">arrow_back</span>
+</button>
+</div>
+</section>
+<!-- Content Shell -->
+<div class="px-margin-mobile -mt-12 relative z-10 md:grid md:grid-cols-12 md:gap-gutter">
+<!-- Primary Column -->
+<div class="md:col-span-8">
+<!-- Main Card -->
+<div class="bg-surface-container-lowest rounded-[32px] p-8 shadow-[0px_10px_30px_rgba(15,23,42,0.04)] mb-8">
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-label-md">COMMUNITY</span>
+<span class="text-on-surface-variant text-label-sm">• 45 mins ago</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg mb-6">Morning Wellness &amp; Social Club: Summer Edition</h2>
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl mb-8">
+<img alt="Organizer" class="w-12 h-12 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHRL2HKfBmUlkbm_9JjEdZ45mewXAd7955IY8yO8Cc8dyRwFvoptAija3QDIlcLZXNEokbD97N9HXPlJ5zYMbt_dU4Bw-xfPnDRB1Waqja6Mwj4EBGlWyB1jV9w8y2FydiwJ9ytHkNidbEOzkn4FkEHXxTsz11OVipTFWk_l-bbpoQmXpcv-GVex5jLmkjR6P0IP4cw0KM7Iur9l3vX2j34a1HfVvVcKonQdTYV03RPnzA2SZCUypifPlbUNG_Zj_WmmMTODyDIOKw"/>
+<div>
+<p class="text-label-sm text-on-surface-variant">Organized by</p>
+<p class="font-label-md text-on-surface">Sarah Mitchell • Wellness Co.</p>
+</div>
+<button class="ml-auto bg-primary text-on-primary px-4 py-2 rounded-full font-label-md text-label-sm hover:opacity-90 transition-all">Follow</button>
+</div>
+<!-- Bento Info Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+<div class="p-6 bg-surface-container rounded-3xl flex items-start gap-4">
+<div class="p-3 bg-white rounded-2xl shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Sunday, June 12</p>
+<p class="text-label-sm text-on-surface-variant">08:30 AM — 11:30 AM</p>
+</div>
+</div>
+<div class="p-6 bg-surface-container rounded-3xl flex items-start gap-4">
+<div class="p-3 bg-white rounded-2xl shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Cloud Nine Pavilion</p>
+<p class="text-label-sm text-on-surface-variant">Westside District, City Center</p>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="font-headline-md text-headline-md">About the Event</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                            Join us for our signature summer morning gathering. We're combining a low-impact mobility session with a curated social brunch. Perfect for meeting fellow athletes of leisure and starting your Sunday with refined energy.
+                        </p>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="bg-surface-container-high px-4 py-2 rounded-xl text-label-md text-on-surface">#Wellness</span>
+<span class="bg-surface-container-high px-4 py-2 rounded-xl text-label-md text-on-surface">#Social</span>
+<span class="bg-surface-container-high px-4 py-2 rounded-xl text-label-md text-on-surface">#Outdoor</span>
+</div>
+</div>
+</div>
+<!-- Map Section -->
+<div class="bg-surface-container-lowest rounded-[32px] overflow-hidden shadow-[0px_10px_30px_rgba(15,23,42,0.04)] mb-8">
+<div class="p-6 border-b border-surface-container">
+<h3 class="font-headline-md text-headline-md">Location</h3>
+</div>
+<div class="aspect-video w-full relative">
+<img alt="Map View" class="w-full h-full object-cover" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlyu1GXHzw3c_asTHfFnZ-0uYytI5erxwBgOrsvY6ZXkWGmfBijfBFCazcaFb6F4B7kBIfWwLjX_tCenxG-fV2vbPtdU699VCviSZpOSh1FfYdVPJERm4-eVNOY-J7HFNvD91TnZe8QO9SE_JCDPpFXfpQXY2FgkxxRh8Y54oErxBO629H_hTERyqqYi1_n5y6fF-HXUXMM8IJINboTQRv6jgcVIacW3MfqRA2ivq6GP4KOtVv7hx94fV6L--rIYBMnD4AkyMHTljM"/>
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/20 rounded-full blur-xl"></div>
+<span class="material-symbols-outlined text-primary text-5xl relative z-10" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+<div class="p-6 flex justify-between items-center">
+<div>
+<p class="font-label-md text-on-surface">Cloud Nine Pavilion</p>
+<p class="text-label-sm text-on-surface-variant">428 Wellness Way, San Francisco</p>
+</div>
+<button class="bg-surface-container-high p-3 rounded-2xl hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="directions">directions</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Sidebar Column -->
+<aside class="md:col-span-4 space-y-6">
+<!-- Registration Card -->
+<div class="bg-surface-container-lowest rounded-[32px] p-6 shadow-[0px_10px_30px_rgba(15,23,42,0.04)] sticky top-24">
+<div class="mb-6">
+<span class="text-on-surface-variant text-label-sm block mb-1">Tickets from</span>
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-bold text-on-surface">$25</span>
+<span class="text-on-surface-variant text-label-sm">/ person</span>
+</div>
+</div>
+<!-- Social Proof -->
+<div class="bg-surface-container rounded-2xl p-4 mb-6">
+<p class="text-label-sm text-on-surface-variant mb-3">128 people attending</p>
+<div class="flex items-center">
+<div class="flex avatar-stack mr-4">
+<img class="w-10 h-10 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDevV9yKGcb8t45QiHEj2yfmELt95JoHrsREbCtDGSJ_eF6SC-t4phTrQ1s9mAIZtuVIkWLenKDvIy31p0FiAcRhr4u23ogHYmfqt2ZYcLLBI1YgoEsGWr-A1VphtB4RJEkfoiYgXThdS72gZ1zAK_8DWCSjwMvBYp5LVeghybEHwcZxcaUSvUXYaubsWtU-By7XsjenIrsphgfBAiai-OwIfmJkZuI6bq6FytZSbMYwdujd2cJffixFUBuy4cGV8eOoIkmfgvWFp_J"/>
+<img class="w-10 h-10 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7nFAla9lrSEWOIrkPE1cRMiEkD01SajbJe20bNFvZznZXYWjQWx44UIj-npgGXvVVQq48YUWv6k9YPeSLHT3AWuxTxCRFDaZlZP_SYvNqP3WGkGTlX1VT85EfWXYYbmFIfYo7aY2Pl9-TbrSI3Vd85N4PiyPPaTO-H0nyglklt-fk25qIkUdtqUrg8qlL2bMPLtgKT6nuU7VQ4np7OLQ8NmkSgctKuPNsZBtap8XLz7GsKoJaU373GslBuFi5s_7krDOtDtoc9rJs"/>
+<img class="w-10 h-10 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbeGiZM5bsx-iu4v1ax9wNZMuZFJAoYXPTBX7rk4E3-Fv5G5Ep6y3Bhfqs2J4m0d3AJtMQwFwrcbFNeeslj8vNE69RXM_MrHv2K-UA2QmLh0pVCf_9OQz1lYT52GBEItgRmcWmdIiN9vx_bO4NCbE8kgLgCMn40MFjZXbUguAikDFvLPk9MLZi1SpcVMOZGuNAIIDqTS5fwEfHn9paHgyqrGMqYI4nLCDlj-7Ajve8y0XsJIDfQIe8W8u5k8c3cXwAqHppAEg5pwAf"/>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-primary-container text-on-primary-container flex items-center justify-center text-[10px] font-bold">+125</div>
+</div>
+</div>
+</div>
+<!-- Stats Widgets -->
+<div class="space-y-3 mb-6">
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-2xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="bolt">bolt</span>
+<span class="text-label-md">Intensity</span>
+</div>
+<span class="font-label-md text-primary">Low</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-2xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="group">group</span>
+<span class="text-label-md">Capacity</span>
+</div>
+<span class="font-label-md text-on-surface">150 Max</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-headline-md text-headline-md shadow-lg shadow-primary/20 scale-100 active:scale-98 transition-all hover:brightness-110">
+                        Join Event
+                    </button>
+<p class="text-center text-label-sm text-on-surface-variant mt-4">No refunds after June 10th</p>
+</div>
+<!-- Shared Items / Logistics -->
+<div class="bg-surface-container-lowest rounded-[32px] p-6 shadow-[0px_10px_30px_rgba(15,23,42,0.04)]">
+<h4 class="font-label-md text-on-surface mb-4">What to bring</h4>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-md">Yoga mat</span>
+</li>
+<li class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-md">Water bottle</span>
+</li>
+<li class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-md">Sunscreen</span>
+</li>
+</ul>
+</div>
+</aside>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-surface dark:bg-surface-container shadow-lg md:hidden">
+<div class="flex justify-around items-center h-20 px-xs w-full">
+<div class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>

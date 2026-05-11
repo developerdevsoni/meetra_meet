@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Check-in &amp; Success</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "primary": "#4f378a",
+                    "on-surface": "#1d1b20",
+                    "on-primary-fixed": "#22005d",
+                    "primary-fixed": "#e9ddff",
+                    "surface": "#fdf7ff",
+                    "tertiary-fixed": "#ffdf93",
+                    "surface-container-low": "#f8f2fa",
+                    "background": "#fdf7ff",
+                    "inverse-on-surface": "#f5eff7",
+                    "surface-container-highest": "#e6e0e9",
+                    "secondary-fixed-dim": "#cdc0e9",
+                    "on-tertiary-container": "#503d00",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#4b4263",
+                    "on-tertiary-fixed": "#241a00",
+                    "surface-container": "#f2ecf4",
+                    "on-secondary-container": "#645a7d",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#e7c365",
+                    "primary-fixed-dim": "#cfbcff",
+                    "surface-container-high": "#ece6ee",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#63597c",
+                    "surface-tint": "#6750a4",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#6750a4",
+                    "on-primary-container": "#e0d2ff",
+                    "outline": "#7a7582",
+                    "on-surface-variant": "#494551",
+                    "tertiary-container": "#c9a74d",
+                    "on-secondary-fixed": "#1f1635",
+                    "surface-dim": "#ded8e0",
+                    "inverse-surface": "#322f35",
+                    "on-tertiary-fixed-variant": "#594400",
+                    "on-background": "#1d1b20",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#cfbcff",
+                    "surface-bright": "#fdf7ff",
+                    "outline-variant": "#cbc4d2",
+                    "secondary-container": "#e1d4fd",
+                    "on-primary-fixed-variant": "#4f378a",
+                    "tertiary": "#765b00",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e6e0e9",
+                    "secondary-fixed": "#e9ddff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "2rem",
+                    "xs": "0.5rem",
+                    "base": "4px",
+                    "xl": "3rem",
+                    "md": "1.5rem",
+                    "sm": "1rem",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanner-frame {
+            box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden">
+<!-- Success Screen (Overlay/Modal Flow) -->
+<main class="min-h-screen flex flex-col items-center justify-center p-margin-mobile relative z-10 overflow-hidden">
+<!-- Subtle Animated Background Elements -->
+<div class="absolute inset-0 z-0 pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-tertiary-container/10 rounded-full blur-[120px]"></div>
+</div>
+<!-- Success Content Container -->
+<div class="w-full max-w-md bg-surface p-xl rounded-[40px] shadow-[0px_10px_30px_rgba(15,23,42,0.04)] text-center relative z-10">
+<!-- Confetti/Celebratory Visual -->
+<div class="mb-lg relative flex justify-center">
+<div class="w-32 h-32 bg-primary-container rounded-full flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined text-on-primary-container text-6xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Floaties -->
+<span class="absolute -top-4 -left-4 text-4xl animate-bounce">🎉</span>
+<span class="absolute top-2 -right-6 text-2xl rotate-12">✨</span>
+<span class="absolute -bottom-2 -left-8 text-3xl -rotate-12">🔥</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">You checked in 🎉</h1>
+<p class="font-body-md text-on-surface-variant mb-lg">Welcome to the Morning Run Club. Your journey starts here!</p>
+<!-- Rewards Bento Section -->
+<div class="grid grid-cols-2 gap-sm mb-xl">
+<div class="bg-surface-container-low p-md rounded-3xl flex flex-col items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary mb-base text-3xl" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<span class="font-label-md text-on-surface-variant">Badge Earned</span>
+<span class="font-headline-md text-headline-md text-on-surface">Early Bird</span>
+</div>
+<div class="bg-primary-fixed p-md rounded-3xl flex flex-col items-center justify-center border border-primary/5">
+<span class="material-symbols-outlined text-primary mb-base text-3xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-label-md text-on-primary-fixed-variant">XP Gained</span>
+<span class="font-headline-md text-headline-md text-primary">+250 XP</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-primary text-on-primary font-display-lg py-md rounded-full text-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all">
+                Continue to Dashboard
+            </button>
+</div>
+<!-- Scanner Preview (Miniature representation for context) -->
+<div class="mt-xl opacity-40 flex flex-col items-center">
+<p class="font-label-sm text-on-surface-variant mb-sm uppercase tracking-widest">Scanner View</p>
+<div class="w-48 h-32 rounded-2xl overflow-hidden relative border-4 border-surface-container-highest bg-black">
+<img alt="Scanner Preview" class="w-full h-full object-cover opacity-60" data-alt="A modern, high-angle shot of a minimalist wooden desk surface. Soft sunlight streams in from a window, creating organic shadows. The overall aesthetic is clean and premium, consistent with a high-end productivity app. Colors are muted with soft greys and warm wood tones, maintaining a serene and clutter-free atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_GJbgDMqSJ7OwUHWOGUB-apo5giVGtTi2-DfZpH-lxY-gr1jCK9XtlNeMaKmTzfCOqdV5g2rw_Va8faPwHCNu7okeP_G03jG-YGwkeDwjpdXLZISZIZfSFh7RVtDs5BcUPVL_obYedf-aRbcy-ipAB21pPmMVExAld4MtZL1MzO2cHIZGWDGtvcJV3n6932FMKDWJtH1BSIX-geZX58cw3RdMDJQEuR07tWuyQaWGEgOn0KiNSyGyGRElH-owE-Pyxr7wnbA8vJrC"/>
+<div class="absolute inset-0 border-2 border-primary/40 m-6 rounded-lg flex items-center justify-center">
+<div class="w-full h-[1px] bg-primary/60 shadow-[0_0_8px_rgba(79,55,138,0.8)]"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell (Suppressed based on "Success/Confirmation" rule, but implemented for hierarchy reference if needed in future flows) -->
+<!-- Not visible on success screen per instructions, but placeholder logic for shell structure -->
+<!-- Full-Screen Scanner Overlay (Triggered State) -->
+<div class="fixed inset-0 z-50 bg-black hidden flex-col items-center justify-between py-xl">
+<div class="w-full px-margin-mobile flex justify-between items-center text-white">
+<button class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
+<span class="material-symbols-outlined">close</span>
+</button>
+<span class="font-headline-md">Scan QR Code</span>
+<button class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
+<span class="material-symbols-outlined">flashlight_on</span>
+</button>
+</div>
+<div class="relative w-72 h-72">
+<!-- The Scanner Cutout -->
+<div class="absolute inset-0 border-2 border-white/20 rounded-[32px] overflow-hidden">
+<div class="absolute inset-0 border-[3px] border-primary rounded-[32px]"></div>
+<!-- Scanning Line -->
+<div class="w-full h-1 bg-primary/80 absolute top-1/2 -translate-y-1/2 shadow-[0_0_15px_#4f378a]"></div>
+</div>
+<!-- Corner Accents -->
+<div class="absolute -top-2 -left-2 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-xl"></div>
+<div class="absolute -top-2 -right-2 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-xl"></div>
+<div class="absolute -bottom-2 -left-2 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-xl"></div>
+<div class="absolute -bottom-2 -right-2 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-xl"></div>
+</div>
+<div class="text-center px-xl">
+<p class="text-white/80 font-body-md">Align the QR code within the frame to automatically check-in.</p>
+</div>
+</div>
+</body></html>
