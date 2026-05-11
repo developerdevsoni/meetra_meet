@@ -11,6 +11,9 @@ class ClanModel {
   final int totalEvents;
   final bool isPremium;
   final List<String> categories;
+  final String city;
+  final String state;
+  final String country;
   final DateTime createdAt;
 
   ClanModel({
@@ -24,6 +27,9 @@ class ClanModel {
     required this.totalEvents,
     required this.isPremium,
     required this.categories,
+    required this.city,
+    required this.state,
+    required this.country,
     required this.createdAt,
   });
 
@@ -39,7 +45,12 @@ class ClanModel {
       totalEvents: map['totalEvents'] ?? 0,
       isPremium: map['isPremium'] ?? false,
       categories: List<String>.from(map['categories'] ?? []),
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      city: map['city'] ?? '',
+      state: map['state'] ?? '',
+      country: map['country'] ?? '',
+      createdAt: map['createdAt'] != null 
+          ? (map['createdAt'] as Timestamp).toDate() 
+          : DateTime.now(),
     );
   }
 
@@ -54,6 +65,9 @@ class ClanModel {
       'totalEvents': totalEvents,
       'isPremium': isPremium,
       'categories': categories,
+      'city': city,
+      'state': state,
+      'country': country,
       'createdAt': FieldValue.serverTimestamp(),
     };
   }

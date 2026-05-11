@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:meetra_meet/models/user_model.dart';
 import 'package:meetra_meet/models/clan_model.dart';
 import 'package:meetra_meet/models/event_model.dart';
 import 'package:meetra_meet/models/message_model.dart';
+import 'package:uuid/uuid.dart';
 
 class FirestoreService {
   FirebaseFirestore? get _db {
@@ -18,9 +20,33 @@ class FirestoreService {
     final db = _db;
     if (db == null) return;
     try {
-      await db.collection('users').doc(user.id).set(user.toMap());
+      // Get FCM Token
+      String? token;
+      try {
+        token = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        print('FCM Token error: $e');
+      }
+
+      final userData = user.toMap();
+      if (token != null) userData['fcmToken'] = token;
+
+      await db.collection('users').doc(user.id).set(userData);
     } catch (e) {
       print('Firestore error: $e');
+    }
+  }
+
+  Future<void> updateFcmToken(String userId) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        await db.collection('users').doc(userId).update({'fcmToken': token});
+      }
+    } catch (e) {
+      print('Firestore update FCM error: $e');
     }
   }
 
@@ -39,7 +65,33 @@ class FirestoreService {
   }
 
   // Clan Operations
-  Stream<List<ClanModel>> getClans() {
+  Future<void> createClan(ClanModel clan) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      // Use the clan.id which should be a UUID now
+      await db.collection('clans').doc(clan.id).set(clan.toMap());
+    } catch (e) {
+      print('Firestore error: $e');
+    }
+  }
+
+  Stream<List<ClanModel>> getClansByLocation(String city) {
+    final db = _db;
+    if (db == null) return Stream.value([]);
+    
+    Query query = db.collection('clans');
+    // if (city.isNotEmpty) {
+    //   query = query.where('city');
+    // }
+    
+    return query.snapshots().map((snapshot) =>
+            snapshot.docs.map((doc) => ClanModel.fromMap(doc.data() as Map<String, dynamic>, doc.id)).toList());
+  }
+
+  String _capitalize(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+
+  Stream<List<ClanModel>> getAllClans() {
     final db = _db;
     if (db == null) return Stream.value([]);
     try {
@@ -51,30 +103,31 @@ class FirestoreService {
     }
   }
 
-  Future<void> joinClan(String userId, String clanId) async {
+  // Event Operations
+  Future<void> createEvent(EventModel event) async {
     final db = _db;
     if (db == null) return;
     try {
-      await db.collection('users').doc(userId).update({
-        'joinedClans': FieldValue.arrayUnion([clanId])
-      });
-      await db.collection('clans').doc(clanId).update({
-        'memberCount': FieldValue.increment(1)
-      });
+      await db.collection('events').doc(event.id).set(event.toMap());
+      // Logic for push notification would go here (typically a Cloud Function)
     } catch (e) {
-      print('Firestore error: $e');
+      print('Firestore create event error: $e');
     }
   }
 
-  // Event Operations
-  Stream<List<EventModel>> getEvents() {
+  Stream<List<EventModel>> getClanEvents(String clanId) {
     final db = _db;
     if (db == null) return Stream.value([]);
     try {
-      return db.collection('events').snapshots().map((snapshot) =>
-          snapshot.docs.map((doc) => EventModel.fromMap(doc.data(), doc.id)).toList());
+      return db
+          .collection('events')
+          .where('clanId', isEqualTo: clanId)
+          .orderBy('eventDate')
+          .snapshots()
+          .map((snapshot) =>
+              snapshot.docs.map((doc) => EventModel.fromMap(doc.data(), doc.id)).toList());
     } catch (e) {
-      print('Firestore error: $e');
+      print('Firestore get events error: $e');
       return Stream.value([]);
     }
   }

@@ -5,6 +5,7 @@ class EventModel {
   final String title;
   final String description;
   final String clanId;
+  final String plannerId; // Added as requested
   final String location;
   final DateTime eventDate;
   final String imageUrl;
@@ -17,6 +18,7 @@ class EventModel {
     required this.title,
     required this.description,
     required this.clanId,
+    required this.plannerId,
     required this.location,
     required this.eventDate,
     required this.imageUrl,
@@ -31,12 +33,17 @@ class EventModel {
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       clanId: map['clanId'] ?? '',
+      plannerId: map['plannerId'] ?? '',
       location: map['location'] ?? '',
-      eventDate: (map['eventDate'] as Timestamp).toDate(),
+      eventDate: map['eventDate'] != null 
+          ? (map['eventDate'] as Timestamp).toDate() 
+          : DateTime.now(),
       imageUrl: map['imageUrl'] ?? '',
       participants: List<String>.from(map['participants'] ?? []),
       isPremium: map['isPremium'] ?? false,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      createdAt: map['createdAt'] != null 
+          ? (map['createdAt'] as Timestamp).toDate() 
+          : DateTime.now(),
     );
   }
 
@@ -45,6 +52,7 @@ class EventModel {
       'title': title,
       'description': description,
       'clanId': clanId,
+      'plannerId': plannerId,
       'location': location,
       'eventDate': Timestamp.fromDate(eventDate),
       'imageUrl': imageUrl,

@@ -7,6 +7,7 @@ class UserModel {
   final String? phoneNumber;
   final String? photoUrl;
   final List<String> joinedClans;
+  final String? fcmToken; // Added for push notifications
   final DateTime createdAt;
 
   UserModel({
@@ -16,6 +17,7 @@ class UserModel {
     this.phoneNumber,
     this.photoUrl,
     required this.joinedClans,
+    this.fcmToken,
     required this.createdAt,
   });
 
@@ -27,7 +29,10 @@ class UserModel {
       phoneNumber: map['phoneNumber'],
       photoUrl: map['photoUrl'],
       joinedClans: List<String>.from(map['joinedClans'] ?? []),
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      fcmToken: map['fcmToken'],
+      createdAt: map['createdAt'] != null 
+          ? (map['createdAt'] as Timestamp).toDate() 
+          : DateTime.now(),
     );
   }
 
@@ -38,6 +43,7 @@ class UserModel {
       'phoneNumber': phoneNumber,
       'photoUrl': photoUrl,
       'joinedClans': joinedClans,
+      'fcmToken': fcmToken,
       'createdAt': FieldValue.serverTimestamp(),
     };
   }

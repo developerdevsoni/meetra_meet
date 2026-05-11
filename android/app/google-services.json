@@ -12,7 +12,20 @@
           "package_name": "com.example.meetra_meet"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "522991060175-cl5itankrv16jdmgvqq03038ucfnsq1t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetra_meet",
+            "certificate_hash": "a29b951aa5357ea52330a0be062d725668d83e57"
+          }
+        },
+        {
+          "client_id": "522991060175-67ps4663nivam8ekha7doi37nr7b7r6e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBhefsdPNJyFsBo-nWt8LSTvRpyBAOB-EE"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522991060175-67ps4663nivam8ekha7doi37nr7b7r6e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

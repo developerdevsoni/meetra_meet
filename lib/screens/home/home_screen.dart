@@ -1,168 +1,469 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:meetra_meet/blocs/clan/clan_bloc.dart';
+import 'package:meetra_meet/blocs/clan/clan_state.dart';
 import 'package:meetra_meet/models/clan_model.dart';
-import 'package:meetra_meet/services/firestore_service.dart';
+import 'package:meetra_meet/screens/clan/clan_detail_screen.dart';
 import 'package:meetra_meet/utils/theme.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final firestoreService = FirestoreService();
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ClanBloc>().add(const LoadClansByLocation("Jodhpur"));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Clan Feed',
-          style: Theme.of(context).textTheme.headlineMedium,
+      body: SafeArea(
+        child: BlocBuilder<ClanBloc, ClanState>(
+          builder: (context, state) {
+            return CustomScrollView(
+              slivers: [
+                _buildHeader(),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSectionHeader('Trending Clans', 'The communities everyone is talking about.'),
+                        SizedBox(height: 16.h),
+                        _buildTrendingList(state),
+                        SizedBox(height: 32.h),
+                        _buildSectionHeader('Recommended For You', null),
+                      ],
+                    ),
+                  ),
+                ),
+                _buildRecommendedSliver(state),
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 32.h),
+                      _buildNearbyHeader(),
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
+                ),
+                _buildNearbySliver(state),
+                SliverToBoxAdapter(child: SizedBox(height: 100.h)),
+              ],
+            );
+          },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none_rounded),
-            onPressed: () {},
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      sliver: SliverToBoxAdapter(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.location_on_rounded, color: AppColors.primary),
+                SizedBox(width: 8.w),
+                Text(
+                  'Select City',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.search_rounded, color: AppColors.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, String? subtitle) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w800,
+              color: AppColors.onSurface,
+            ),
           ),
+          if (subtitle != null)
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
         ],
       ),
-      body: StreamBuilder<List<ClanModel>>(
-        stream: firestoreService.getClans(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          
-          final clans = snapshot.data ?? _getDummyClans();
-          
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: clans.length,
-            itemBuilder: (context, index) {
-              return _buildClanCard(context, clans[index]);
-            },
-          );
+    );
+  }
+
+  Widget _buildTrendingList(ClanState state) {
+    if (state is! ClanLoaded) return const SizedBox.shrink();
+    
+    return SizedBox(
+      height: 380.h, // Increased height to prevent overflow
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemCount: state.clans.length,
+        itemBuilder: (context, index) {
+          final clan = state.clans[index];
+          return _buildTrendingCard(clan, index + 1);
         },
       ),
     );
   }
 
-  Widget _buildClanCard(BuildContext context, ClanModel clan) {
+  Widget _buildTrendingCard(ClanModel clan, int rank) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ClanDetailScreen(clan: clan))),
+      child: Container(
+        width: 320.w,
+        margin: EdgeInsets.only(right: 16.w),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(24.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+                  child: Image.network(
+                    clan.imageUrl,
+                    height: 180.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(height: 180.h, color: Colors.grey[200]),
+                  ),
+                ),
+                Positioned(
+                  top: 12.h,
+                  right: 12.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 14),
+                        SizedBox(width: 4.w),
+                        Text(
+                          'Rank $rank',
+                          style: TextStyle(color: Colors.white, fontSize: 11.sp, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          clan.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.favorite_rounded, color: AppColors.tertiary, size: 16),
+                          SizedBox(width: 4.w),
+                          Text('98%', style: TextStyle(color: AppColors.tertiary, fontSize: 12.sp, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text('Admin: ${clan.adminName}', style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13.sp)),
+                  SizedBox(height: 16.h),
+                  const Divider(color: AppColors.surfaceContainerHigh),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      Expanded(child: _buildMiniStat(Icons.groups_rounded, 'Members', clan.memberCount.toString())),
+                      Expanded(child: _buildMiniStat(Icons.calendar_today_rounded, 'Events', '${clan.totalEvents} Monthly')),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMiniStat(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8.w),
+          decoration: BoxDecoration(
+            color: AppColors.secondaryContainer,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Icon(icon, color: AppColors.primary, size: 18.w),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label.toUpperCase(), style: TextStyle(fontSize: 9.sp, color: AppColors.onSurfaceVariant, letterSpacing: 0.5)),
+              Text(value, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecommendedSliver(ClanState state) {
+    if (state is! ClanLoaded) return const SliverToBoxAdapter(child: SizedBox.shrink());
+    
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => _buildRecommendedCard(state.clans[index]),
+          childCount: state.clans.length.clamp(0, 2),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecommendedCard(ClanModel clan) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(bottom: 24.h),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Clan Image
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            child: Stack(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+            child: Image.network(
+              clan.imageUrl, 
+              height: 180.h, 
+              width: double.infinity, 
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(height: 180.h, color: Colors.grey[200]),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
-                  imageUrl: clan.imageUrl,
-                  height: 200,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondaryContainer,
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text('Based on your interests', style: TextStyle(color: AppColors.primary, fontSize: 10.sp, fontWeight: FontWeight.bold)),
+                ),
+                SizedBox(height: 12.h),
+                Text(clan.name, style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+                Text('Admin: ${clan.adminName}', style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13.sp)),
+                SizedBox(height: 20.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.groups_rounded, color: AppColors.primary, size: 20),
+                        SizedBox(width: 8.w),
+                        Text('${clan.memberCount} Members', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Icon(Icons.favorite_rounded, color: AppColors.tertiary, size: 20),
+                        SizedBox(width: 4.w),
+                        const Text('99%', style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.h),
+                SizedBox(
                   width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(color: AppColors.surfaceVariant),
-                  errorWidget: (context, url, error) => Container(
-                    color: AppColors.surfaceVariant,
-                    child: const Icon(Icons.image_not_supported_rounded),
+                  height: 52.h,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26.r)),
+                      elevation: 0,
+                    ),
+                    child: const Text('Join Clan', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
-                if (clan.isPremium)
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.amber, width: 1),
-                      ),
-                      child: Row(
-                        children: const [
-                          Icon(Icons.stars_rounded, color: Colors.amber, size: 16),
-                          SizedBox(width: 4),
-                          Text(
-                            'PREMIUM',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),
-          
-          Padding(
-            padding: const EdgeInsets.all(16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNearbyHeader() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Nearby Clans',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w800,
+              color: AppColors.onSurface,
+            ),
+          ),
+          TextButton(
+            onPressed: () {},
+            child: const Text('View Map', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNearbySliver(ClanState state) {
+    if (state is! ClanLoaded) return const SliverToBoxAdapter(child: SizedBox.shrink());
+    
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => _buildNearbyCard(state.clans[index]),
+          childCount: state.clans.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNearbyCard(ClanModel clan) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16.r),
+            child: Image.network(
+              clan.imageUrl, 
+              width: 80.w, 
+              height: 80.w, 
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(width: 80.w, height: 80.w, color: Colors.grey[200]),
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      clan.name,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
+                    Expanded(child: Text(clan.name, style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.people_alt_rounded, size: 16, color: AppColors.onSurfaceVariant),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${clan.memberCount}',
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ],
+                      child: Row(
+                        children: [
+                          const Icon(Icons.favorite_rounded, color: AppColors.tertiary, size: 12),
+                          SizedBox(width: 4.w),
+                          const Text('92%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                Text('0.8 miles away • Admin: ${clan.adminName}', style: TextStyle(fontSize: 12.sp, color: AppColors.onSurfaceVariant), maxLines: 1, overflow: TextOverflow.ellipsis),
+                SizedBox(height: 8.h),
                 Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 12,
-                      backgroundColor: AppColors.primaryContainer,
-                      child: Icon(Icons.person, size: 14, color: AppColors.primary),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Admin: ${clan.adminName}',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '${clan.totalEvents} Events',
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
+                    _buildSmallStat(Icons.groups_rounded, '${clan.memberCount} members'),
+                    SizedBox(width: 16.w),
+                    _buildSmallStat(Icons.calendar_today_rounded, 'Sat 8AM'),
                   ],
                 ),
               ],
@@ -173,34 +474,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  List<ClanModel> _getDummyClans() {
-    return [
-      ClanModel(
-        id: '1',
-        name: 'The Hikers',
-        description: 'Exploring the peaks',
-        imageUrl: 'https://images.unsplash.com/photo-1551632811-561732d1e306',
-        adminId: 'admin1',
-        adminName: 'Soni Dev',
-        memberCount: 1240,
-        totalEvents: 12,
-        isPremium: true,
-        categories: ['Adventure'],
-        createdAt: DateTime.now(),
-      ),
-      ClanModel(
-        id: '2',
-        name: 'Urban Runners',
-        description: 'Morning city runs',
-        imageUrl: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8',
-        adminId: 'admin2',
-        adminName: 'Alice',
-        memberCount: 850,
-        totalEvents: 5,
-        isPremium: false,
-        categories: ['Fitness'],
-        createdAt: DateTime.now(),
-      ),
-    ];
+  Widget _buildSmallStat(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 14.w, color: AppColors.onSurfaceVariant),
+        SizedBox(width: 4.w),
+        Text(text, style: TextStyle(fontSize: 11.sp, color: AppColors.onSurfaceVariant)),
+      ],
+    );
   }
 }
