@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: BlocBuilder<ClanBloc, ClanState>(
           builder: (context, state) {
-            final isLoading = state is ClanLoading;
+            final isLoading = state is ClanLoading || state is ClanInitial;
             
             if (state is ClanLoaded && state.clans.isEmpty && state.myClans.isEmpty && !isLoading) {
               return _buildEmptyState();
@@ -211,69 +211,91 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(24.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Filter Tribes', style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.bold)),
-                TextButton(
-                  onPressed: () => setState(() {
-                    _selectedCity = null;
-                    _selectedCategory = null;
-                    _minMembers = 0;
-                    Navigator.pop(context);
-                  }),
-                  child: const Text('Reset'),
-                ),
-              ],
-            ),
-            SizedBox(height: 24.h),
-            Text('City', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
-            SizedBox(height: 8.h),
-            _buildFilterChipRow(['All', _currentCity, 'Mumbai', 'Delhi', 'Bangalore'], (val) => _selectedCity = val == 'All' ? null : val, _selectedCity ?? 'All'),
-            
-            SizedBox(height: 24.h),
-            Text('Clan Type', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
-            SizedBox(height: 8.h),
-            _buildFilterChipRow(['All', ..._categories], (val) => _selectedCategory = val == 'All' ? null : val, _selectedCategory ?? 'All'),
-
-            SizedBox(height: 24.h),
-            Text('Minimum Members', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
-            Slider(
-              value: _minMembers.toDouble(),
-              min: 0,
-              max: 1000,
-              divisions: 10,
-              label: '$_minMembers+',
-              activeColor: AppColors.primary,
-              onChanged: (val) => setState(() => _minMembers = val.toInt()),
-            ),
-            
-            SizedBox(height: 32.h),
-            SizedBox(
-              width: double.infinity,
-              height: 56.h,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-                ),
-                child: const Text('Apply Filters', style: TextStyle(fontWeight: FontWeight.bold)),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Filter Tribes', style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCity = null;
+                        _selectedCategory = null;
+                        _minMembers = 0;
+                      });
+                      setModalState(() {});
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Reset'),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(height: MediaQuery.of(context).padding.bottom),
-          ],
+              SizedBox(height: 24.h),
+              Text('City', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+              SizedBox(height: 8.h),
+              _buildFilterChipRow(
+                ['All', _currentCity, 'Mumbai', 'Delhi', 'Bangalore'], 
+                (val) {
+                  setState(() => _selectedCity = val == 'All' ? null : val);
+                  setModalState(() {});
+                }, 
+                _selectedCity ?? 'All'
+              ),
+              
+              SizedBox(height: 24.h),
+              Text('Clan Type', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+              SizedBox(height: 8.h),
+              _buildFilterChipRow(
+                ['All', ..._categories], 
+                (val) {
+                  setState(() => _selectedCategory = val == 'All' ? null : val);
+                  setModalState(() {});
+                }, 
+                _selectedCategory ?? 'All'
+              ),
+
+              SizedBox(height: 24.h),
+              Text('Minimum Members', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+              Slider(
+                value: _minMembers.toDouble(),
+                min: 0,
+                max: 1000,
+                divisions: 10,
+                label: '$_minMembers+',
+                activeColor: AppColors.primary,
+                onChanged: (val) {
+                  setState(() => _minMembers = val.toInt());
+                  setModalState(() {});
+                },
+              ),
+              
+              SizedBox(height: 32.h),
+              SizedBox(
+                width: double.infinity,
+                height: 56.h,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                  ),
+                  child: const Text('Apply Filters', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
         ),
       ),
     );
@@ -292,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
               selected: isSelected,
               onSelected: (selected) {
                 if (selected) {
-                  setState(() => onSelected(opt));
+                  onSelected(opt);
                 }
               },
               selectedColor: AppColors.primary,
@@ -415,7 +437,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: CircleAvatar(
                 radius: 26.r,
+                backgroundColor: AppColors.primary.withOpacity(0.1),
                 backgroundImage: NetworkImage(clan.imageUrl),
+                onBackgroundImageError: (_, __) => const Icon(Icons.groups_rounded, color: AppColors.primary),
               ),
             ),
             Positioned(
@@ -496,6 +520,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 160.h,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 160.h,
+                      color: AppColors.primary.withOpacity(0.1),
+                      child: Icon(Icons.image_not_supported_rounded, color: AppColors.primary.withOpacity(0.5)),
+                    ),
                   ),
                 ),
                 Positioned(
@@ -539,17 +568,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _buildMiniAvatars(),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AppColors.primary, AppColors.primaryLight],
-                          ),
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Text('Join', 
-                          style: TextStyle(color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.bold)
-                        ),
+                      BlocBuilder<ClanBloc, ClanState>(
+                        builder: (context, state) {
+                          bool isJoined = false;
+                          if (state is ClanLoaded) {
+                            isJoined = state.myClans.any((c) => c.id == clan.id);
+                          }
+                          
+                          return Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                            decoration: BoxDecoration(
+                              gradient: isJoined ? null : const LinearGradient(
+                                colors: [AppColors.primary, AppColors.primaryLight],
+                              ),
+                              color: isJoined ? AppColors.secondaryContainer : null,
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Text(isJoined ? 'Joined' : 'Join', 
+                              style: TextStyle(
+                                color: isJoined ? AppColors.primary : Colors.white, 
+                                fontSize: 12.sp, 
+                                fontWeight: FontWeight.bold
+                              )
+                            ),
+                          );
+                        }
                       ),
                     ],
                   ),
@@ -576,7 +619,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: CircleAvatar(
               radius: 10.r,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/100?u=$index'),
+              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=${index + 1}&background=E0F2EF&color=1F8A70'),
+              onBackgroundImageError: (_, __) {},
             ),
           ),
         )),
@@ -607,53 +652,71 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildNearbyCard(ClanModel clan) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
-            child: Image.network(clan.imageUrl, width: 70.w, height: 70.w, fit: BoxFit.cover),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(clan.name, 
-                  style: GoogleFonts.plusJakartaSans(fontSize: 15.sp, fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text('${clan.categories.isNotEmpty ? clan.categories.first : 'Tribe'} • 2.4 km', 
-                  style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 12.sp)
-                ),
-              ],
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ClanDetailScreen(clan: clan))),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16.h),
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.primary, width: 1),
+          ],
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
+              child: Image.network(
+                clan.imageUrl, 
+                width: 70.w, 
+                height: 70.w, 
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(width: 70.w, height: 70.w, color: AppColors.primary.withOpacity(0.1)),
+              ),
             ),
-            child: Text('View', 
-              style: TextStyle(color: AppColors.primary, fontSize: 11.sp, fontWeight: FontWeight.bold)
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(clan.name, 
+                    style: GoogleFonts.plusJakartaSans(fontSize: 15.sp, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text('${clan.categories.isNotEmpty ? clan.categories.first : 'Tribe'} • 2.4 km', 
+                    style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 12.sp)
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            BlocBuilder<ClanBloc, ClanState>(
+              builder: (context, state) {
+                bool isJoined = false;
+                if (state is ClanLoaded) {
+                  isJoined = state.myClans.any((c) => c.id == clan.id);
+                }
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: isJoined ? AppColors.secondaryContainer : Colors.transparent,
+                    border: isJoined ? null : Border.all(color: AppColors.primary, width: 1),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Text(isJoined ? 'Joined' : 'View', 
+                    style: TextStyle(color: AppColors.primary, fontSize: 11.sp, fontWeight: FontWeight.bold)
+                  ),
+                );
+              }
+            ),
+          ],
+        ),
       ),
     );
   }

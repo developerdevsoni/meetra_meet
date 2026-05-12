@@ -12,6 +12,7 @@ import 'package:meetra_meet/services/upload_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/foundation.dart';
 
 class CreateClanScreen extends StatefulWidget {
   const CreateClanScreen({super.key});
@@ -29,6 +30,7 @@ class _CreateClanScreenState extends State<CreateClanScreen> {
   final _countryController = TextEditingController();
   final _categoriesController = TextEditingController();
   
+  XFile? _pickedXFile;
   File? _imageFile;
   bool _isLoading = false;
 
@@ -37,7 +39,10 @@ class _CreateClanScreenState extends State<CreateClanScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path);
+        _pickedXFile = pickedFile;
+        if (!kIsWeb) {
+          _imageFile = File(pickedFile.path);
+        }
       });
     }
   }
@@ -175,10 +180,12 @@ class _CreateClanScreenState extends State<CreateClanScreen> {
           borderRadius: BorderRadius.circular(24.r),
           border: Border.all(color: AppColors.outlineVariant, style: BorderStyle.none),
         ),
-        child: _imageFile != null
+        child: (_imageFile != null || (kIsWeb && _pickedXFile != null))
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(24.r),
-                child: Image.file(_imageFile!, fit: BoxFit.cover),
+                child: kIsWeb 
+                  ? Image.network(_pickedXFile!.path, fit: BoxFit.cover)
+                  : Image.file(_imageFile!, fit: BoxFit.cover),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,

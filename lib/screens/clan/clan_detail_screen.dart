@@ -146,7 +146,14 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(widget.clan.imageUrl, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: AppColors.primary.withOpacity(0.1))),
+            Image.network(
+              widget.clan.imageUrl, 
+              fit: BoxFit.cover, 
+              errorBuilder: (_, __, ___) => Container(
+                color: AppColors.primary.withOpacity(0.1),
+                child: const Icon(Icons.groups_rounded, color: AppColors.primary, size: 50),
+              ),
+            ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -249,6 +256,20 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
           });
         },
         eventLoader: _getEventsForDay,
+        calendarBuilders: CalendarBuilders(
+          markerBuilder: (context, day, events) {
+            if (events.isNotEmpty) {
+              return Positioned(
+                bottom: 1,
+                child: Container(
+                  padding: const EdgeInsets.all(1),
+                  child: Text('🎉', style: TextStyle(fontSize: 12.sp)),
+                ),
+              );
+            }
+            return null;
+          },
+        ),
         calendarStyle: CalendarStyle(
           todayDecoration: BoxDecoration(color: AppColors.primary.withOpacity(0.2), shape: BoxShape.circle),
           selectedDecoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
