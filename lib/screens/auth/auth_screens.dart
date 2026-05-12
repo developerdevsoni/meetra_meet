@@ -15,7 +15,9 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           // Pop the login screen so AuthWrapper can show MainNavigation
-          Navigator.of(context).pop();
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
         }
         if (state is AuthFailure) {
           ScaffoldMessenger.of(context).showSnackBar(

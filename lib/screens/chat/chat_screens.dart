@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:meetra_meet/blocs/auth/auth_bloc.dart';
+import 'package:meetra_meet/blocs/auth/auth_state.dart';
 import 'package:meetra_meet/models/message_model.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
@@ -16,12 +19,15 @@ class ChatListScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: 5, // Dummy count
-        itemBuilder: (context, index) {
-          return _buildChatItem(context, index);
-        },
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.chat_bubble_outline_rounded, size: 64, color: AppColors.onSurfaceVariant.withOpacity(0.2)),
+            const SizedBox(height: 16),
+            const Text('Your conversations will appear here', style: TextStyle(color: AppColors.onSurfaceVariant)),
+          ],
+        ),
       ),
     );
   }
@@ -81,40 +87,47 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: false,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<List<MessageModel>>(
-              stream: _firestoreService.getMessages(widget.chatId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                
-                final messages = snapshot.data ?? [];
-                
-                return ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final message = messages[index];
-                    bool isMe = message.senderId == 'current_user_id'; // Placeholder
-                    return _buildMessageBubble(message, isMe);
-                  },
-                );
-              },
-            ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        final currentUserId = authState is AuthAuthenticated ? authState.user.uid : '';
+        final currentUserName = authState is AuthAuthenticated ? authState.user.displayName : 'You';
+
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            title: Text(widget.title),
+            centerTitle: false,
           ),
-          _buildMessageInput(),
-        ],
-      ),
+          body: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<List<MessageModel>>(
+                  stream: _firestoreService.getMessages(widget.chatId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    
+                    final messages = snapshot.data ?? [];
+                    
+                    return ListView.builder(
+                      reverse: true,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        bool isMe = message.senderId == currentUserId;
+                        return _buildMessageBubble(message, isMe);
+                      },
+                    );
+                  },
+                ),
+              ),
+              _buildMessageInput(currentUserId, currentUserName!),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -151,7 +164,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  Widget _buildMessageInput() {
+  Widget _buildMessageInput(String currentUserId, String currentUserName) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -183,11 +196,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             child: IconButton(
               icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
               onPressed: () {
-                if (_messageController.text.isNotEmpty) {
+                if (_messageController.text.isNotEmpty && currentUserId.isNotEmpty) {
                   final message = MessageModel(
                     id: '',
-                    senderId: 'current_user_id', // Placeholder
-                    senderName: 'You',
+                    senderId: currentUserId,
+                    senderName: currentUserName,
                     content: _messageController.text,
                     timestamp: DateTime.now(),
                   );

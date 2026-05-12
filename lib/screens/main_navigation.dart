@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:meetra_meet/screens/home/home_screen.dart';
@@ -21,7 +22,7 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const DiscoverScreen(),
-    const Center(child: Text('Create Clan')), 
+    const SizedBox(), // Placeholder for FAB action
     const ChatListScreen(),
     const ProfileScreen(),
   ];
@@ -29,6 +30,8 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      backgroundColor: AppColors.background,
       body: PageTransitionSwitcher(
         transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
           return FadeThroughTransition(
@@ -37,85 +40,101 @@ class _MainNavigationState extends State<MainNavigation> {
             child: child,
           );
         },
-        child: _screens[_currentIndex],
+        child: _currentIndex == 2 ? const SizedBox() : _screens[_currentIndex],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const CreateClanScreen()),
-          );
-        },
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
-        child: Icon(Icons.add_rounded, size: 32.w),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Container(
-        height: 80.h,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
+      bottomNavigationBar: _buildFloatingDock(),
+    );
+  }
+
+  Widget _buildFloatingDock() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(24.w, 0, 24.w, 24.h),
+      height: 70.h,
+      child: Stack(
+        children: [
+          // Glass Background
+          ClipRRect(
+            borderRadius: BorderRadius.circular(35.r),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(35.r),
+                  border: Border.all(color: Colors.white.withOpacity(0.2)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
-        child: BottomAppBar(
-          elevation: 0,
-          color: Colors.transparent,
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(0, Icons.grid_view_rounded, 'Feed'),
-              _buildNavItem(1, Icons.explore_rounded, 'Explore'),
-              SizedBox(width: 48.w), // Space for FAB
-              _buildNavItem(3, Icons.chat_bubble_outline_rounded, 'Chat'),
-              _buildNavItem(4, Icons.person_outline_rounded, 'Profile'),
-            ],
           ),
-        ),
+          // Nav Items
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(0, Icons.home_rounded, Icons.home_outlined),
+                _buildNavItem(1, Icons.explore_rounded, Icons.explore_outlined),
+                _buildCenterAddButton(),
+                _buildNavItem(3, Icons.chat_bubble_rounded, Icons.chat_bubble_outline_rounded),
+                _buildNavItem(4, Icons.person_rounded, Icons.person_outline_rounded),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildCenterAddButton() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const CreateClanScreen()),
+        );
+      },
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.primaryLight],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(Icons.add_rounded, color: Colors.white, size: 28.w),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon) {
     final isSelected = _currentIndex == index;
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
-              size: 24.w,
-            ),
-            if (isSelected) ...[
-              SizedBox(width: 8.w),
-              Text(
-                label,
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ],
-          ],
+        padding: EdgeInsets.all(12.w),
+        child: Icon(
+          isSelected ? activeIcon : inactiveIcon,
+          color:isSelected? AppColors.primary
+            : Colors.grey.shade500,
+          size: 26.w,
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meetra_meet/models/user_model.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,30 +14,45 @@ class AuthService {
 
   // Auth state stream
   Stream<User?> get user => _auth.authStateChanges();
+  User? get currentUser => _auth.currentUser;
 
   // Sign in with Google (Reverted to the API version that works in your environment)
   Future<UserModel?> signInWithGoogle() async {
     try {
-      // In version 7.x+, authenticate() is often used instead of signIn()
+      UserCredential userCredential;
 
-      await _googleSignIn.initialize(serverClientId: "522991060175-67ps4663nivam8ekha7doi37nr7b7r6e.apps.googleusercontent.com");
-      final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate();
-      if (googleUser == null) return null;
+      if (kIsWeb) {
+        // WEB LOGIN
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      
-      // Some versions of the 7.x API only expose idToken directly
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-        accessToken: null, // Set to null if the getter is missing in your version
-      );
+        userCredential =
+        await _auth.signInWithPopup(googleProvider);
+      } else {
+        // MOBILE LOGIN
+        await _googleSignIn.initialize(
+          serverClientId:
+          "522991060175-67ps4663nivam8ekha7doi37nr7b7r6e.apps.googleusercontent.com",
+        );
 
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        final GoogleSignInAccount googleUser =
+        await _googleSignIn.authenticate();
+
+        final googleAuth = googleUser.authentication;
+
+        final credential = GoogleAuthProvider.credential(
+          idToken: googleAuth.idToken,
+        );
+
+        userCredential =
+        await _auth.signInWithCredential(credential);
+      }
+
       final User? firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
-        UserModel? userModel = await _firestoreService.getUser(firebaseUser.uid);
-        
+        UserModel? userModel =
+        await _firestoreService.getUser(firebaseUser.uid);
+
         if (userModel == null) {
           userModel = UserModel(
             id: firebaseUser.uid,
@@ -46,12 +62,14 @@ class AuthService {
             joinedClans: [],
             createdAt: DateTime.now(),
           );
+
           await _firestoreService.createUser(userModel);
         } else {
           await _firestoreService.updateFcmToken(firebaseUser.uid);
         }
 
         final prefs = await SharedPreferences.getInstance();
+
         await prefs.setBool('is_logged_in', true);
         await prefs.setString('user_id', firebaseUser.uid);
 
@@ -60,9 +78,9 @@ class AuthService {
     } catch (e) {
       print('Error signing in with Google: $e');
     }
+
     return null;
   }
-
   Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();

@@ -3,11 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:meetra_meet/blocs/auth/auth_bloc.dart';
 import 'package:meetra_meet/blocs/auth/auth_state.dart';
+import 'package:meetra_meet/blocs/clan/clan_bloc.dart';
+import 'package:meetra_meet/blocs/clan/clan_state.dart';
 import 'package:meetra_meet/models/clan_model.dart';
 import 'package:meetra_meet/models/event_model.dart';
+import 'package:meetra_meet/models/user_model.dart';
+import 'package:meetra_meet/models/clan_media_model.dart';
 import 'package:meetra_meet/screens/clan/clan_admin_screen.dart';
 import 'package:meetra_meet/screens/clan/event_planner_screen.dart';
+import 'package:meetra_meet/screens/chat/chat_screens.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
+import 'package:meetra_meet/services/media_cache_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -26,11 +32,18 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
   DateTime? _selectedDay;
   List<EventModel> _clanEvents = [];
   bool _isLoadingEvents = true;
+  int _selectedTabIndex = 0;
+  List<UserModel> _members = [];
+  List<ClanMediaModel> _media = [];
+  bool _isLoadingMembers = true;
+  bool _isLoadingMedia = true;
 
   @override
   void initState() {
     super.initState();
     _loadEvents();
+    _loadMembers();
+    _loadMedia();
   }
 
   void _loadEvents() {
@@ -44,53 +57,83 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
     });
   }
 
+  Future<void> _loadMembers() async {
+    final members = await FirestoreService().getClanMembers(widget.clan.id);
+    if (mounted) {
+      setState(() {
+        _members = members;
+        _isLoadingMembers = false;
+      });
+    }
+  }
+
+  Future<void> _loadMedia() async {
+    // Check cache first
+    final cachedMedia = MediaCacheService().getCache(widget.clan.id);
+    if (cachedMedia != null) {
+      if (mounted) {
+        setState(() {
+          _media = cachedMedia;
+          _isLoadingMedia = false;
+        });
+      }
+      return;
+    }
+
+    // Fetch from Firestore
+    final media = await FirestoreService().getClanMedia(widget.clan.id);
+    if (mounted) {
+      setState(() {
+        _media = media;
+        _isLoadingMedia = false;
+      });
+      // Save to cache
+      MediaCacheService().setCache(widget.clan.id, media);
+    }
+  }
+
   List<EventModel> _getEventsForDay(DateTime day) {
     return _clanEvents.where((event) => isSameDay(event.eventDate, day)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
-    final isAdmin = authState is AuthAuthenticated && authState.user.uid == widget.clan.adminId;
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        final userId = authState is AuthAuthenticated ? authState.user.uid : null;
+        final isAdmin = userId == widget.clan.adminId;
+        
+        return BlocBuilder<ClanBloc, ClanState>(
+          builder: (context, clanState) {
+            bool isMember = false;
+            if (clanState is ClanLoaded) {
+              isMember = clanState.myClans.any((c) => c.id == widget.clan.id);
+            }
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        slivers: [
-          _buildAppBar(context, isAdmin),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _buildHeroInfo(isAdmin),
-                _buildTabs(),
-                Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildCalendarSection(),
-                      SizedBox(height: 24.h),
-                      _buildSelectedDayEvents(),
-                      SizedBox(height: 32.h),
-                      Text('Upcoming Events', style: GoogleFonts.plusJakartaSans(fontSize: 22.sp, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 16.h),
-                      _isLoadingEvents 
-                          ? const Center(child: CircularProgressIndicator())
-                          : _clanEvents.isEmpty 
-                              ? _buildEmptyEvents()
-                              : Column(
-                                  children: _clanEvents.map((e) => _buildEventCard(e)).toList(),
-                                ),
-                      SizedBox(height: 100.h),
-                    ],
+            return Scaffold(
+              backgroundColor: AppColors.background,
+              body: CustomScrollView(
+                slivers: [
+                  _buildAppBar(context, isAdmin),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        _buildHeroInfo(isAdmin, isMember),
+                        _buildTabs(),
+                        Padding(
+                          padding: EdgeInsets.all(16.w),
+                          child: _buildTabContent(),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: !isAdmin ? _buildJoinAction(context) : null,
+                ],
+              ),
+              bottomNavigationBar: (!isAdmin && !isMember) ? _buildJoinAction(context, userId) : null,
+            );
+          },
+        );
+      },
     );
   }
 
@@ -132,7 +175,7 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
     );
   }
 
-  Widget _buildHeroInfo(bool isAdmin) {
+  Widget _buildHeroInfo(bool isAdmin, bool isMember) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(24.w),
@@ -152,11 +195,11 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
                 child: const Text('Verified Clan', style: TextStyle(color: AppColors.tertiary, fontWeight: FontWeight.bold, fontSize: 11)),
               ),
               const Spacer(),
-              if (isAdmin)
+              if (isMember)
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(20.r)),
-                  child: const Text('Admin View', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 11)),
+                  decoration: BoxDecoration(color: AppColors.secondaryContainer, borderRadius: BorderRadius.circular(20.r)),
+                  child: const Text('Member', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 11)),
                 ),
             ],
           ),
@@ -288,28 +331,222 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
     );
   }
 
-  Widget _buildTabs() {
+  Widget _buildTabContent() {
+    switch (_selectedTabIndex) {
+      case 0: // Events
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Upcoming Events', style: GoogleFonts.plusJakartaSans(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16.h),
+            _isLoadingEvents 
+                ? const Center(child: CircularProgressIndicator())
+                : _clanEvents.isEmpty 
+                    ? _buildEmptyEvents()
+                    : Column(
+                        children: _clanEvents.map((e) => _buildEventCard(e)).toList(),
+                      ),
+            SizedBox(height: 100.h),
+          ],
+        );
+      case 1: // Calendar
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildCalendarSection(),
+            SizedBox(height: 24.h),
+            _buildSelectedDayEvents(),
+            SizedBox(height: 100.h),
+          ],
+        );
+      case 2: // Members
+        return Column(
+          children: [
+            if (_isLoadingMembers)
+              const Center(child: CircularProgressIndicator())
+            else if (_members.isEmpty)
+              _buildEmptyState(Icons.groups_rounded, 'No members yet')
+            else
+              ..._members.map((member) => _buildMemberCard(member)),
+            SizedBox(height: 100.h),
+          ],
+        );
+      case 3: // Media
+        return Column(
+          children: [
+            if (_isLoadingMedia)
+              const Center(child: CircularProgressIndicator())
+            else if (_media.isEmpty)
+              _buildEmptyState(Icons.photo_library_rounded, 'No media shared yet')
+            else
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 8.w,
+                  mainAxisSpacing: 8.w,
+                ),
+                itemCount: _media.length,
+                itemBuilder: (context, index) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(12.r),
+                    child: Image.network(_media[index].url, fit: BoxFit.cover),
+                  );
+                },
+              ),
+            SizedBox(height: 100.h),
+          ],
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildEmptyState(IconData icon, String message) {
+    return Column(
+      children: [
+        SizedBox(height: 40.h),
+        Icon(icon, size: 64.r, color: AppColors.onSurfaceVariant.withOpacity(0.2)),
+        SizedBox(height: 16.h),
+        Text(message, style: TextStyle(color: AppColors.onSurfaceVariant)),
+      ],
+    );
+  }
+
+  Widget _buildMemberCard(UserModel user) {
+    final isAdmin = user.id == widget.clan.adminId;
+
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        final currentUserId = authState is AuthAuthenticated ? authState.user.uid : null;
+        
+        return GestureDetector(
+          onTap: () {
+            if (currentUserId != null && currentUserId != user.id) {
+              final chatId = currentUserId.compareTo(user.id) < 0 
+                  ? '${currentUserId}_${user.id}' 
+                  : '${user.id}_$currentUserId';
+                  
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ChatDetailScreen(
+                    chatId: chatId,
+                    title: user.name,
+                  ),
+                ),
+              );
+            } else if (currentUserId == user.id) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You cannot chat with yourself!')));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please log in to chat.')));
+            }
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 12.h),
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: AppColors.surfaceContainerLow),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 20.r,
+                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  child: Text(user.name[0], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(width: 8.w),
+                          _buildRoleTag(isAdmin),
+                        ],
+                      ),
+                      Text(isAdmin ? 'Clan Admin' : 'Member', style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 11.sp)),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chat_bubble_outline_rounded, size: 20.r, color: AppColors.primary),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRoleTag(bool isAdmin) {
     return Container(
-      margin: EdgeInsets.only(top: 24.h),
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.surfaceContainerLow))),
-      child: Row(
-        children: [
-          _buildTabItem('Schedule', true),
-          _buildTabItem('Members', false),
-          _buildTabItem('Media', false),
-        ],
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: isAdmin ? AppColors.primary : AppColors.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(6.r),
+      ),
+      child: Text(
+        isAdmin ? 'ADMIN' : 'MEMBER',
+        style: TextStyle(
+          color: isAdmin ? Colors.white : AppColors.onSurfaceVariant,
+          fontSize: 8.sp,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
 
-  Widget _buildTabItem(String text, bool isSelected) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-      child: Text(text, style: TextStyle(color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant, fontWeight: FontWeight.bold, fontSize: 14.sp)),
+  Widget _buildTabs() {
+    return Container(
+      margin: EdgeInsets.only(top: 24.h),
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.surfaceContainerLow))),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _buildTabItem(0, 'Events'),
+            _buildTabItem(1, 'Calendar'),
+            _buildTabItem(2, 'Members'),
+            _buildTabItem(3, 'Media'),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildJoinAction(BuildContext context) {
+  Widget _buildTabItem(int index, String text) {
+    final isSelected = _selectedTabIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedTabIndex = index),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? AppColors.primary : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+            fontWeight: FontWeight.bold,
+            fontSize: 14.sp,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildJoinAction(BuildContext context, String? userId) {
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, -5))]),
@@ -318,7 +555,14 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
           width: double.infinity,
           height: 56.h,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              if (userId != null) {
+                context.read<ClanBloc>().add(JoinClanRequested(widget.clan.id, userId));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Welcome to the tribe!')));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please log in to join tribes.')));
+              }
+            },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)), elevation: 0),
             child: Text('Join this Clan', style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.bold)),
           ),

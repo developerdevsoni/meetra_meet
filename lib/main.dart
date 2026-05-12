@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,12 +12,16 @@ import 'package:meetra_meet/screens/splash_screen.dart';
 import 'package:meetra_meet/services/auth_service.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
+import 'package:meetra_meet/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   try {
-    await Firebase.initializeApp();
+    // For web, you MUST provide options. Run 'flutterfire configure' to generate firebase_options.dart
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
     print('Firebase initialization error: $e');
   }
@@ -74,7 +79,6 @@ class AuthWrapper extends StatelessWidget {
         } else if (state is AuthUnauthenticated || state is AuthFailure) {
           return const OnboardingScreen();
         }
-        // AuthInitial or AuthLoading
         return const SplashScreen();
       },
     );
