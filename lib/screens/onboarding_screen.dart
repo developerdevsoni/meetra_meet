@@ -43,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void initState() {
     super.initState();
-    // _startTimer();
+    _startTimer();
   }
 
   void _startTimer() {
@@ -64,11 +64,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   @override
-  // void dispose() {
-  //   _timer?.cancel();
-  //   _pageController.dispose();
-  //   super.dispose();
-  // }
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -366,7 +366,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               )
             : GestureDetector(
                 onTap: () {
-                  // _pageController.nextPage(duration: const Duration(milliseconds: 600), curve: Curves.easeInOut);
+                  _pageController.nextPage(duration: const Duration(milliseconds: 600), curve: Curves.easeInOut);
                 },
                 child: Container(
                   width: 56.r,

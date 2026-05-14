@@ -179,18 +179,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Plus+Jakarta+Sans:wght@500;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="splash-container">
-    <div class="logo-section">
-      <h1 class="logo-main">meetra</h1>
-      <p class="logo-sub">FIND YOUR PEOPLE</p>
-    </div>
+  <div id="splash-screen" class="splash-container">
     <div class="bottom-section">
       <div class="progress-bar-container">
         <div class="progress-bar-fill"></div>
       </div>
-      <p class="loading-text">Building real connections...</p>
     </div>
   </div>
+  <script>
+    window.addEventListener('load', function() {
+      var splash = document.getElementById('splash-screen');
+      
+      // Fast removal fallback (5 seconds)
+      var fallbackTimeout = setTimeout(function() {
+        if (splash) {
+          splash.style.transition = 'opacity 0.1s ease-out';
+          splash.style.opacity = '0';
+          setTimeout(function() { splash.remove(); }, 100);
+        }
+      }, 5000);
+
+      window._flutter_onEntrypointLoaded = function(engineInitializer) {
+        engineInitializer.initializeEngine().then(function(appRunner) {
+          appRunner.runApp().then(function() {
+            clearTimeout(fallbackTimeout);
+            // Ultra-fast removal (< 100ms)
+            if (splash) {
+              splash.style.transition = 'opacity 0.08s ease-out';
+              splash.style.opacity = '0';
+              setTimeout(function() { splash.remove(); }, 80);
+            }
+          });
+        });
+      };
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
