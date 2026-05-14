@@ -6,6 +6,7 @@ import 'package:meetra_meet/screens/discover/discover_screen.dart';
 import 'package:meetra_meet/screens/chat/chat_screens.dart';
 import 'package:meetra_meet/screens/profile/profile_screen.dart';
 import 'package:meetra_meet/screens/clan/create_clan_screen.dart';
+import 'package:meetra_meet/screens/event/event_screen.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:animations/animations.dart';
 
@@ -22,8 +23,7 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const DiscoverScreen(),
-    const SizedBox(), // Placeholder for FAB action
-    const ChatListScreen(),
+    const EventScreen(),
     const ProfileScreen(),
   ];
 
@@ -40,7 +40,7 @@ class _MainNavigationState extends State<MainNavigation> {
             child: child,
           );
         },
-        child: _currentIndex == 2 ? const SizedBox() : _screens[_currentIndex],
+        child: _screens[_currentIndex],
       ),
       bottomNavigationBar: _buildFloatingDock(),
     );
@@ -99,8 +99,8 @@ class _MainNavigationState extends State<MainNavigation> {
                 _buildNavItem(0, Icons.home_rounded, Icons.home_outlined),
                 _buildNavItem(1, Icons.explore_rounded, Icons.explore_outlined),
                 _buildCenterAddButton(),
-                _buildNavItem(3, Icons.chat_bubble_rounded, Icons.chat_bubble_outline_rounded),
-                _buildNavItem(4, Icons.person_rounded, Icons.person_outline_rounded),
+                _buildNavItem(2, Icons.event_available_rounded, Icons.event_note_outlined),
+                _buildNavItem(3, Icons.person_rounded, Icons.person_outline_rounded),
               ],
             ),
           ),

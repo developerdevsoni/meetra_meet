@@ -78,11 +78,11 @@ class ChatListScreen extends StatelessWidget {
         ),
       ),
       title: Text(
-        clan.name,
+        clan.adminName,
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
       subtitle: Text(
-        'Tap to chat with ${clan.name} members',
+        'Clan: ${clan.name}',
         style: const TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -93,7 +93,7 @@ class ChatListScreen extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => ChatDetailScreen(
               chatId: clan.id,
-              title: clan.name,
+              title: clan.adminName,
             ),
           ),
         );

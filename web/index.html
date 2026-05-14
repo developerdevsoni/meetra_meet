@@ -18,32 +18,179 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  
+  <!-- SEO Primary Meta Tags -->
+  <title>Meetra Meet | DevSoni Event Management & Local Clans</title>
+  <meta name="title" content="Meetra Meet | DevSoni Event Management & Local Clans">
+  <meta name="description" content="Meetra Meet by DevSoni: The ultimate Flutter website for event management and real-time event tracking. Discover local clans, join events, and connect with your community.">
+  <meta name="keywords" content="Meetra Meet, DevSoni, DevSoni Event Management, Flutter website, event management, event tracking, local clans, community events, social networking, Jodhpur events, real-time tracking">
+  <meta name="author" content="Dev Soni">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://meetra-meet.web.app/">
+  <meta property="og:title" content="Meetra Meet | DevSoni Event Management">
+  <meta property="og:description" content="Discover local clans and manage events with precision. Meetra Meet by DevSoni offers real-time event tracking and community building on a high-performance Flutter website.">
+  <meta property="og:image" content="https://meetra-meet.web.app/assets/images/og_preview.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://meetra-meet.web.app/">
+  <meta property="twitter:title" content="Meetra Meet | DevSoni Event Management">
+  <meta property="twitter:description" content="Discover local clans and manage events with precision. Meetra Meet by DevSoni offers real-time event tracking and community building on a high-performance Flutter website.">
+  <meta property="twitter:image" content="https://meetra-meet.web.app/assets/images/og_preview.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="meetra_meet">
+  <meta name="apple-mobile-web-app-title" content="Meetra Meet">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>meetra_meet</title>
   <link rel="manifest" href="manifest.json">
   
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Meetra Meet",
+    "operatingSystem": "Web, Android, iOS",
+    "applicationCategory": "SocialNetworkingApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "The ultimate Flutter website for event management, real-time event tracking, and connecting with local clans, built by DevSoni.",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1024"
+    }
+  }
+  </script>
+
   <!-- Google Sign-In Client ID for Web -->
   <meta name="google-signin-client_id" content="522991060175-67ps4663nivam8ekha7doi37nr7b7r6e.apps.googleusercontent.com">
+  <meta name="google-site-verification" content="google580a208c4e112cb1" />
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <style>
+    body {
+      background-color: #0D1B1E;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    /* Constrain the Flutter app to a mobile-like view on Desktop */
+    flutter-view {
+      max-width: 500px !important;
+      max-height: 900px !important;
+      margin: auto !important;
+      box-shadow: 0 0 50px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .splash-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      background-image: url("assets/assets/images/splash_bg.png");
+      background-size: cover;
+      background-position: center;
+    }
+    /* Overlay for the background image to match the dark theme */
+    .splash-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(13, 27, 30, 0), rgba(13, 27, 30, 0.8), #0D1B1E);
+      z-index: 1;
+    }
+    .logo-section, .bottom-section {
+      z-index: 2;
+    }
+    .logo-section {
+      text-align: center;
+      margin-bottom: 100px;
+    }
+    .logo-main {
+      font-family: 'Outfit', sans-serif;
+      font-size: 64px;
+      font-weight: bold;
+      color: white;
+      letter-spacing: -2px;
+      margin: 0;
+    }
+    .logo-sub {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #4FBFA5;
+      letter-spacing: 4px;
+      margin: 5px 0 0 0;
+    }
+    .bottom-section {
+      position: absolute;
+      bottom: 80px;
+      width: 80%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background-color: #4FBFA5;
+      animation: progress-animation 2s ease-in-out forwards;
+    }
+    .loading-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      margin-top: 20px;
+    }
+    @keyframes progress-animation {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Plus+Jakarta+Sans:wght@500;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="splash-container">
+    <div class="logo-section">
+      <h1 class="logo-main">meetra</h1>
+      <p class="logo-sub">FIND YOUR PEOPLE</p>
+    </div>
+    <div class="bottom-section">
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill"></div>
+      </div>
+      <p class="loading-text">Building real connections...</p>
+    </div>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

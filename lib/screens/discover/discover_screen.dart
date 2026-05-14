@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:meetra_meet/blocs/clan/clan_bloc.dart';
 import 'package:meetra_meet/blocs/clan/clan_state.dart';
@@ -28,7 +29,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Discover Tribes', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
+        title: Text('Discover Clans', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
       ),
       body: Column(
         children: [
@@ -53,7 +54,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               children: [
-                _buildCategoryChip('All Tribes', true),
+                _buildCategoryChip('All Clans', true),
                 _buildCategoryChip('Fitness', false),
                 _buildCategoryChip('Music', false),
                 _buildCategoryChip('Adventure', false),
@@ -103,7 +104,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-                child: Image.network(clan.imageUrl, fit: BoxFit.cover, width: double.infinity, errorBuilder: (_, __, ___) => Container(color: Colors.grey[200])),
+                child: CachedNetworkImage(
+                  imageUrl: clan.imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  placeholder: (context, url) => Container(color: Colors.grey[100], child: const Center(child: CircularProgressIndicator(strokeWidth: 2))),
+                  errorWidget: (context, url, error) => Container(color: Colors.grey[200]),
+                ),
               ),
             ),
             Padding(
@@ -137,7 +144,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         children: [
           Icon(Icons.explore_off_rounded, size: 60.w, color: AppColors.outlineVariant),
           SizedBox(height: 16.h),
-          const Text('No tribes found. Start one?'),
+          const Text('No clans found. Start one?'),
         ],
       ),
     );

@@ -1,12 +1,13 @@
 {
-    "name": "meetra_meet",
-    "short_name": "meetra_meet",
+    "name": "Meetra Meet",
+    "short_name": "Meetra",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1F8A70",
+    "theme_color": "#1F8A70",
+    "description": "Connect with local tribes, join exciting events, and build meaningful communities with Meetra Meet.",
     "orientation": "portrait-primary",
+    "categories": ["social", "networking", "community"],
     "prefer_related_applications": false,
     "icons": [
         {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:meetra_meet/blocs/auth/auth_bloc.dart';
 import 'package:meetra_meet/blocs/auth/auth_state.dart';
@@ -17,6 +18,7 @@ import 'package:meetra_meet/services/media_cache_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:meetra_meet/screens/event/event_detail_screen.dart';
 
 class ClanDetailScreen extends StatefulWidget {
   final ClanModel clan;
@@ -146,10 +148,11 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              widget.clan.imageUrl, 
+            CachedNetworkImage(
+              imageUrl: widget.clan.imageUrl, 
               fit: BoxFit.cover, 
-              errorBuilder: (_, __, ___) => Container(
+              placeholder: (context, url) => Container(color: AppColors.primary.withOpacity(0.05), child: const Center(child: CircularProgressIndicator(strokeWidth: 2))),
+              errorWidget: (context, url, error) => Container(
                 color: AppColors.primary.withOpacity(0.1),
                 child: const Icon(Icons.groups_rounded, color: AppColors.primary, size: 50),
               ),
@@ -314,40 +317,58 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
   }
 
   Widget _buildEventCard(EventModel event) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppColors.surfaceContainerLow),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => EventDetailScreen(eventId: event.id)),
       ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
-            child: Image.network(event.imageUrl, width: 80.w, height: 80.w, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(width: 80.w, height: 80.w, color: Colors.grey[200])),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(event.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    const Icon(Icons.location_on_rounded, size: 12, color: AppColors.onSurfaceVariant),
-                    SizedBox(width: 4.w),
-                    Text(event.location, style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                Text('${event.eventDate.hour}:${event.eventDate.minute.toString().padLeft(2, '0')}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
-              ],
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16.h),
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: AppColors.surfaceContainerLow),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: CachedNetworkImage(
+                imageUrl: event.imageUrl, 
+                width: 80.w, 
+                height: 80.w, 
+                fit: BoxFit.cover, 
+                placeholder: (context, url) => Container(width: 80.w, height: 80.w, color: Colors.grey[100], child: const Center(child: CircularProgressIndicator(strokeWidth: 2))),
+                errorWidget: (context, url, error) => Container(width: 80.w, height: 80.w, color: Colors.grey[200]),
+              ),
             ),
-          ),
-        ],
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(event.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  SizedBox(height: 4.h),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_rounded, size: 12, color: AppColors.onSurfaceVariant),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: Text(event.location, style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant,),
+                          maxLines: 3, // or null for unlimited
+                          overflow: TextOverflow.clip, // or visible / fade
+                          softWrap: true,),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text('${event.eventDate.hour}:${event.eventDate.minute.toString().padLeft(2, '0')}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -412,7 +433,12 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
                 itemBuilder: (context, index) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(12.r),
-                    child: Image.network(_media[index].url, fit: BoxFit.cover),
+                    child: CachedNetworkImage(
+                      imageUrl: _media[index].url, 
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(color: Colors.grey[100], child: const Center(child: CircularProgressIndicator(strokeWidth: 2))),
+                      errorWidget: (context, url, error) => Container(color: Colors.grey[200]),
+                    ),
                   );
                 },
               ),
@@ -591,9 +617,9 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
             onPressed: () {
               if (userId != null) {
                 context.read<ClanBloc>().add(JoinClanRequested(widget.clan.id, userId));
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Welcome to the tribe!')));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Welcome to the clan!')));
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please log in to join tribes.')));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please log in to join clans.')));
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)), elevation: 0),

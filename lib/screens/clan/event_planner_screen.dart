@@ -37,6 +37,8 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
   bool _isLoading = false;
   List<dynamic> _locationSuggestions = [];
   bool _isSearchingLocation = false;
+  double? _selectedLat;
+  double? _selectedLng;
 
   Future<void> _searchLocations(String query) async {
     if (query.length < 3) {
@@ -110,6 +112,8 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
         clanId: widget.clan.id,
         plannerId: currentUser.id,
         location: _locationController.text.trim(),
+        latitude: _selectedLat,
+        longitude: _selectedLng,
         eventDate: finalDateTime,
         imageUrl: imageUrl.isEmpty ? 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1000' : imageUrl,
         participants: [currentUser.id],
@@ -243,6 +247,8 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
             onTap: () {
               setState(() {
                 _locationController.text = suggestion['display_name'];
+                _selectedLat = double.tryParse(suggestion['lat']?.toString() ?? '');
+                _selectedLng = double.tryParse(suggestion['lon']?.toString() ?? '');
                 _locationSuggestions = [];
               });
             },

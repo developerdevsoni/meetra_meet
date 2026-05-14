@@ -106,11 +106,21 @@ class FirestoreService {
     final db = _db;
     if (db == null) return;
     try {
-      // 1. Add clanId to user's joinedClans
+      // 1. Get user document to check if already joined
+      final userDoc = await db.collection('users').doc(userId).get();
+      if (userDoc.exists) {
+        List<dynamic> joinedClans = userDoc.data()?['joinedClans'] ?? [];
+        if (joinedClans.contains(clanId)) {
+          print('User already in clan');
+          return;
+        }
+      }
+
+      // 2. Add clanId to user's joinedClans
       await db.collection('users').doc(userId).update({
         'joinedClans': FieldValue.arrayUnion([clanId])
       });
-      // 2. Increment clan memberCount
+      // 3. Increment clan memberCount
       await db.collection('clans').doc(clanId).update({
         'memberCount': FieldValue.increment(1)
       });
@@ -193,6 +203,57 @@ class FirestoreService {
       print('Firestore get events error: $e');
       return Stream.value([]);
     }
+  }
+
+  Stream<List<EventModel>> getAttendingEvents(String userId) {
+    final db = _db;
+    if (db == null) return Stream.value([]);
+    try {
+      return db
+          .collection('events')
+          .where('participants', arrayContains: userId)
+          .snapshots()
+          .map((snapshot) =>
+              snapshot.docs.map((doc) => EventModel.fromMap(doc.data(), doc.id)).toList());
+    } catch (e) {
+      print('Firestore get attending events error: $e');
+      return Stream.value([]);
+    }
+  }
+
+  Future<void> joinEvent(String eventId, String userId) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      await db.collection('events').doc(eventId).update({
+        'participants': FieldValue.arrayUnion([userId])
+      });
+    } catch (e) {
+      print('Firestore join event error: $e');
+    }
+  }
+
+  Future<void> markAttendance(String eventId, String userId) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      await db.collection('events').doc(eventId).update({
+        'attendees': FieldValue.arrayUnion([userId])
+      });
+    } catch (e) {
+      print('Firestore mark attendance error: $e');
+    }
+  }
+
+  Stream<EventModel?> getEventStream(String eventId) {
+    final db = _db;
+    if (db == null) return Stream.value(null);
+    return db.collection('events').doc(eventId).snapshots().map((doc) {
+      if (doc.exists) {
+        return EventModel.fromMap(doc.data()!, doc.id);
+      }
+      return null;
+    });
   }
 
   Future<List<UserModel>> getClanMembers(String clanId) async {

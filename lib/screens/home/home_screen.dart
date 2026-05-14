@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:meetra_meet/blocs/clan/clan_bloc.dart';
 import 'package:meetra_meet/blocs/clan/clan_state.dart';
@@ -13,6 +14,7 @@ import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:meetra_meet/screens/leaderboard/leaderboard_screen.dart';
+import 'package:meetra_meet/screens/chat/chat_screens.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -85,8 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
             // Dummy data for skeletonizing
             var clans = isLoading ? List.generate(5, (index) => ClanModel(
               id: 'skeleton',
-              name: 'Loading Tribe Name',
-              description: 'Loading description for this tribe...',
+              name: 'Loading Clan Name',
+              description: 'Loading description for this clan...',
               imageUrl: '',
               adminId: 'skeleton',
               adminName: 'Admin Name',
@@ -166,22 +168,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: AppColors.onSurface,
                           )
                         ),
-                        Text('Discover your tribe', 
-                          style: TextStyle(fontSize: 12.sp, color: AppColors.onSurfaceVariant)
+                    Row(
+                      children: [
+                        Icon(Icons.location_on_rounded, color: AppColors.primary, size: 12.w),
+                        SizedBox(width: 4.w),
+                        Text(_currentCity, 
+                          style: TextStyle(fontSize: 12.sp, color: AppColors.onSurfaceVariant, fontWeight: FontWeight.w600)
                         ),
                       ],
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    _buildLeaderboardButton(),
-                    SizedBox(width: 8.w),
-                    _buildLocationPill(),
-                  ],
-                ),
               ],
-            );
+            ),
+            Row(
+              children: [
+                _buildLeaderboardButton(),
+                SizedBox(width: 8.w),
+                _buildChatButton(),
+              ],
+            ),
+          ],
+        );
           },
         ),
       ),
@@ -226,6 +234,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  Widget _buildChatButton() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatListScreen()));
+      },
+      child: Container(
+        padding: EdgeInsets.all(8.r),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(Icons.chat_bubble_outline_rounded, color: AppColors.primary, size: 20.w),
+      ),
+    );
+  }
 
   void _showFilterDialog() {
     showModalBottomSheet(
@@ -246,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Filter Tribes', style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+                  Text('Filter Clans', style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.bold)),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -362,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search tribes or events',
+                    hintText: 'Search clans or events',
                     hintStyle: TextStyle(color: AppColors.onSurfaceVariant.withOpacity(0.5), fontSize: 14.sp),
                     prefixIcon: Icon(Icons.search_rounded, color: AppColors.onSurfaceVariant, size: 20.w),
                     border: InputBorder.none,
@@ -459,13 +482,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: CircleAvatar(
                 radius: 26.r,
                 backgroundColor: AppColors.primary.withOpacity(0.1),
-                backgroundImage: NetworkImage(clan.imageUrl),
-                onBackgroundImageError: (_, __) => const Icon(Icons.groups_rounded, color: AppColors.primary),
+                backgroundImage: CachedNetworkImageProvider(clan.imageUrl),
               ),
             ),
             Positioned(
               right: 2,
-              bottom: 2,
+              bottom: 20.h,
               child: Container(
                 width: 12.r,
                 height: 12.r,
@@ -491,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(20.w, 32.h, 20.w, 16.h),
-            child: Text('Trending Tribes', 
+            child: Text('Trending Clans', 
               style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.w800)
             ),
           ),
@@ -534,17 +556,36 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Stack(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-                  child: Image.network(
-                    clan.imageUrl,
-                    height: 160.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 160.h,
-                      color: AppColors.primary.withOpacity(0.1),
-                      child: Icon(Icons.image_not_supported_rounded, color: AppColors.primary.withOpacity(0.5)),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16.h),
+                    child: Container(
+                      height: 120.w,
+                      width: 120.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: clan.imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: AppColors.primary.withOpacity(0.05),
+                            child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: AppColors.primary.withOpacity(0.1),
+                            child: Icon(Icons.image_not_supported_rounded, color: AppColors.primary.withOpacity(0.5)),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -691,14 +732,26 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.r),
-              child: Image.network(
-                clan.imageUrl, 
-                width: 70.w, 
-                height: 70.w, 
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(width: 70.w, height: 70.w, color: AppColors.primary.withOpacity(0.1)),
+            Container(
+              height: 70.w,
+              width: 70.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.primary.withOpacity(0.1), width: 1),
+              ),
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: clan.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: AppColors.primary.withOpacity(0.05),
+                    child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: AppColors.primary.withOpacity(0.1),
+                    child: Icon(Icons.groups_rounded, color: AppColors.primary.withOpacity(0.5), size: 30.w),
+                  ),
+                ),
               ),
             ),
             SizedBox(width: 16.w),
@@ -711,7 +764,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text('${clan.categories.isNotEmpty ? clan.categories.first : 'Tribe'} • 2.4 km', 
+                  Text('${clan.categories.isNotEmpty ? clan.categories.first : 'Clan'} • 2.4 km', 
                     style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 12.sp)
                   ),
                 ],
@@ -792,7 +845,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(20.w, 32.h, 20.w, 16.h),
-            child: Text('Trending Tribes', 
+            child: Text('Trending Clans', 
               style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.w800)
             ),
           ),
@@ -821,7 +874,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 24.h),
-              child: Text('Nearby Tribes', 
+              child: Text('Nearby Clans', 
                 style: GoogleFonts.plusJakartaSans(fontSize: 20.sp, fontWeight: FontWeight.w800)
               ),
             ),
@@ -856,7 +909,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.plusJakartaSans(fontSize: 22.sp, fontWeight: FontWeight.w800)
                 ),
                 SizedBox(height: 12.h),
-                Text('Be the first to start a tribe in $_currentCity. Your people are waiting.', 
+                const Text('No clans found. Start one?'),
+                Text('Be the first to start a clan in $_currentCity. Your people are waiting.', 
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 14.sp)
                 ),
