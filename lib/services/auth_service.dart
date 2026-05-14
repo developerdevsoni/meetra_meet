@@ -60,11 +60,13 @@ class AuthService {
             email: firebaseUser.email ?? '',
             photoUrl: firebaseUser.photoURL,
             joinedClans: [],
+            ownedClans: [],
             createdAt: DateTime.now(),
           );
 
           await _firestoreService.createUser(userModel);
         } else {
+
           await _firestoreService.updateFcmToken(firebaseUser.uid);
         }
 
@@ -97,6 +99,49 @@ class AuthService {
     final User? firebaseUser = _auth.currentUser;
     if (firebaseUser != null) {
       return await _firestoreService.getUser(firebaseUser.uid);
+    }
+    return null;
+  }
+
+  Future<UserModel?> signInWithEmail(String email, String password) async {
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      if (credential.user != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('is_logged_in', true);
+        await prefs.setString('user_id', credential.user!.uid);
+        return await _firestoreService.getUser(credential.user!.uid);
+      }
+    } catch (e) {
+      print('Email sign in error: $e');
+      rethrow;
+    }
+    return null;
+  }
+
+  Future<UserModel?> signUpWithEmail(String name, String email, String password) async {
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      if (credential.user != null) {
+        final userModel = UserModel(
+          id: credential.user!.uid,
+          name: name,
+          email: email,
+          joinedClans: [],
+          ownedClans: [],
+          createdAt: DateTime.now(),
+        );
+        await _firestoreService.createUser(userModel);
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('is_logged_in', true);
+        await prefs.setString('user_id', credential.user!.uid);
+
+        return userModel;
+      }
+    } catch (e) {
+      print('Email sign up error: $e');
+      rethrow;
     }
     return null;
   }

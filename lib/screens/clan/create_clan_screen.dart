@@ -70,21 +70,23 @@ class _CreateClanScreenState extends State<CreateClanScreen> {
 
       final clanId = const Uuid().v4(); // Generate 128-bit UUID for the clan
       
+      final categories = _categoriesController.text
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
       final clan = ClanModel(
         id: clanId,
         name: _nameController.text.trim(),
         description: _descriptionController.text.trim(),
-        imageUrl: imageUrl.isEmpty ? 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1000' : imageUrl,
-        adminId: currentUser.uid, // Using the actual 128-bit UID from Firebase
-        adminName: currentUser.displayName ?? 'Founder',
+        imageUrl: imageUrl.isEmpty ? _getDefaultImage(categories) : imageUrl,
+        adminId: currentUser.id, // Using the actual 128-bit UID from Firebase
+        adminName: currentUser.name,
         memberCount: 1,
         totalEvents: 0,
         isPremium: false,
-        categories: _categoriesController.text
-            .split(',')
-            .map((e) => e.trim())
-            .where((e) => e.isNotEmpty)
-            .toList(),
+        categories: categories,
         city: _cityController.text.trim(),
         state: _stateController.text.trim(),
         country: _countryController.text.trim(),
@@ -197,6 +199,20 @@ class _CreateClanScreenState extends State<CreateClanScreen> {
               ),
       ),
     );
+  }
+
+  String _getDefaultImage(List<String> categories) {
+    if (categories.isEmpty) return 'https://images.unsplash.com/photo-1511632765486-a01980e01a18'; // Social default
+
+    final category = categories.first.toLowerCase();
+    
+    if (category.contains('gaming')) return 'https://images.unsplash.com/photo-1542751371-adc38448a05e';
+    if (category.contains('music')) return 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4';
+    if (category.contains('fit') || category.contains('gym') || category.contains('workout')) return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
+    if (category.contains('tech') || category.contains('code') || category.contains('dev')) return 'https://images.unsplash.com/photo-1518770660439-4636190af475';
+    if (category.contains('art') || category.contains('paint') || category.contains('design')) return 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b';
+    
+    return 'https://images.unsplash.com/photo-1511632765486-a01980e01a18'; // Social default
   }
 
   Widget _buildTextField(TextEditingController controller, String label, IconData icon, String hint, {int maxLines = 1}) {

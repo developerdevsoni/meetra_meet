@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:meetra_meet/blocs/auth/auth_bloc.dart';
 import 'package:meetra_meet/blocs/auth/auth_state.dart';
+import 'package:meetra_meet/blocs/clan/clan_bloc.dart';
+import 'package:meetra_meet/blocs/clan/clan_state.dart';
 import 'package:meetra_meet/models/message_model.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
@@ -19,50 +21,79 @@ class ChatListScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.chat_bubble_outline_rounded, size: 64, color: AppColors.onSurfaceVariant.withOpacity(0.2)),
-            const SizedBox(height: 16),
-            const Text('Your conversations will appear here', style: TextStyle(color: AppColors.onSurfaceVariant)),
-          ],
-        ),
+      body: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, authState) {
+          if (authState is! AuthAuthenticated) {
+            return const Center(child: Text('Please log in to see your messages'));
+          }
+
+          return BlocBuilder<ClanBloc, ClanState>(
+            builder: (context, clanState) {
+              if (clanState is ClanLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final myClans = clanState is ClanLoaded ? clanState.myClans : [];
+
+              if (myClans.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat_bubble_outline_rounded, size: 64, color: AppColors.onSurfaceVariant.withOpacity(0.2)),
+                      const SizedBox(height: 16),
+                      const Text('Join a clan to start chatting!', style: TextStyle(color: AppColors.onSurfaceVariant)),
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                itemCount: myClans.length,
+                itemBuilder: (context, index) {
+                  return _buildChatItem(context, myClans[index]);
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-  Widget _buildChatItem(BuildContext context, int index) {
+  Widget _buildChatItem(BuildContext context, dynamic clan) {
     return ListTile(
-      leading: const CircleAvatar(
-        radius: 28,
-        backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.primary, width: 2),
+        ),
+        child: CircleAvatar(
+          radius: 28,
+          backgroundImage: NetworkImage(clan.imageUrl),
+          backgroundColor: AppColors.primaryContainer,
+        ),
       ),
       title: Text(
-        index % 2 == 0 ? 'Gaming Clan 🎮' : 'Soni Dev',
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        clan.name,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
-      subtitle: const Text('See you at the event!'),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const Text('12:45 PM', style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
-          if (index == 0)
-            Container(
-              margin: const EdgeInsets.only(top: 4),
-              padding: const EdgeInsets.all(6),
-              decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-              child: const Text('2', style: TextStyle(color: Colors.white, fontSize: 10)),
-            ),
-        ],
+      subtitle: Text(
+        'Tap to chat with ${clan.name} members',
+        style: const TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
+      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.onSurfaceVariant),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => ChatDetailScreen(
-              chatId: 'dummy_id',
-              title: index % 2 == 0 ? 'Gaming Clan 🎮' : 'Soni Dev',
+              chatId: clan.id,
+              title: clan.name,
             ),
           ),
         );
@@ -89,8 +120,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, authState) {
-        final currentUserId = authState is AuthAuthenticated ? authState.user.uid : '';
-        final currentUserName = authState is AuthAuthenticated ? authState.user.displayName : 'You';
+        final currentUserId = authState is AuthAuthenticated ? authState.user.id : '';
+        final currentUserName = authState is AuthAuthenticated ? authState.user.name : 'You';
 
         return Scaffold(
           backgroundColor: AppColors.background,

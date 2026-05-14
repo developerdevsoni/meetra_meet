@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:meetra_meet/screens/onboarding_screen.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,131 +12,128 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
+class _SplashScreenState extends State<SplashScreen> {
+  double _progress = 0.0;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    );
+    _startLoading();
+  }
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
-
-    _controller.forward();
+  void _startLoading() {
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      setState(() {
+        _progress += 0.05; // Slightly faster for better UX
+        if (_progress >= 1.0) {
+          _progress = 1.0;
+          _timer?.cancel();
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary.withOpacity(0.05),
-              AppColors.surface,
-              AppColors.surface,
-              AppColors.primary.withOpacity(0.02),
-            ],
+      body: Stack(
+        children: [
+          // Background Image
+          Image.asset(
+            'assets/images/splash_bg.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: 140.w,
-                          height: 140.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        Container(
-                          width: 100.w,
-                          height: 100.w,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [AppColors.primary, Color(0xFF6750A4)],
-                            ),
-                            borderRadius: BorderRadius.circular(32.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.3),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.handshake_rounded,
-                            color: Colors.white,
-                            size: 48.w,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 32.h),
-                    Text(
-                      'Meetra-Meet',
-                      style: GoogleFonts.outfit(
-                        fontSize: 42.sp,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -1,
-                        color: AppColors.onSurface,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
-                      child: Text(
-                        'CRAFTING CONNECTIONS',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 2,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+          // Dark Overlay with Gradient
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF0D1B1E).withOpacity(0),
+                  const Color(0xFF0D1B1E).withOpacity(0),
+                  const Color(0xFF0D1B1E),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          // Content
+          // Center(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       // Custom M Logo (using an icon as a placeholder for now, or the logo asset)
+          //       Icon(Icons.diversity_3_rounded, color: const Color(0xFF4FBFA5), size: 100.w),
+          //       SizedBox(height: 16.h),
+          //       Text(
+          //         'meetra',
+          //         style: GoogleFonts.outfit(
+          //           fontSize: 56.sp,
+          //           fontWeight: FontWeight.bold,
+          //           letterSpacing: -2,
+          //           color: Colors.white,
+          //         ),
+          //       ),
+          //       Text(
+          //         'FIND YOUR PEOPLE',
+          //         style: GoogleFonts.plusJakartaSans(
+          //           fontSize: 14.sp,
+          //           fontWeight: FontWeight.w800,
+          //           letterSpacing: 4,
+          //           color: const Color(0xFF4FBFA5),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // Bottom Progress & Text
+          Positioned(
+            bottom: 60.h,
+            left: 40.w,
+            right: 40.w,
+            child: Column(
+              children: [
+                // Custom Progress Bar
+                Container(
+                  height: 4.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: _progress,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4FBFA5),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24.h),
+                Text(
+                  'Building real connections...',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

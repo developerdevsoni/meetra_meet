@@ -100,7 +100,7 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, authState) {
-        final userId = authState is AuthAuthenticated ? authState.user.uid : null;
+        final userId = authState is AuthAuthenticated ? authState.user.id : null;
         final isAdmin = userId == widget.clan.adminId;
         
         return BlocBuilder<ClanBloc, ClanState>(
@@ -440,7 +440,7 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
 
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, authState) {
-        final currentUserId = authState is AuthAuthenticated ? authState.user.uid : null;
+        final currentUserId = authState is AuthAuthenticated ? authState.user.id : null;
         
         return GestureDetector(
           onTap: () {
@@ -495,7 +495,19 @@ class _ClanDetailScreenState extends State<ClanDetailScreen> {
                     ],
                   ),
                 ),
-                Icon(Icons.chat_bubble_outline_rounded, size: 20.r, color: AppColors.primary),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.favorite_rounded, color: Colors.pink, size: 20),
+                      onPressed: () {
+                        FirestoreService().likeUser(user.id);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Reputation given to ${user.name}!')));
+                      },
+                    ),
+                    Icon(Icons.chat_bubble_outline_rounded, size: 20.r, color: AppColors.primary),
+                  ],
+                ),
               ],
             ),
           ),

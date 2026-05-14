@@ -49,7 +49,20 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget _buildFloatingDock() {
     return Container(
       margin: EdgeInsets.fromLTRB(24.w, 0, 24.w, 24.h),
-      height: 70.h,
+      height: 60.h,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(35.r),
+
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 25,
+            spreadRadius: 2,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+
       child: Stack(
         children: [
           // Glass Background
@@ -75,8 +88,12 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           // Nav Items
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
+
+            padding: EdgeInsets.symmetric(horizontal: 3.w),
             child: Row(
+
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(0, Icons.home_rounded, Icons.home_outlined),

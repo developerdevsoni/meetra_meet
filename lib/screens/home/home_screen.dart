@@ -12,6 +12,7 @@ import 'package:meetra_meet/services/location_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:meetra_meet/screens/leaderboard/leaderboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await _fetchLocation();
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
-      context.read<ClanBloc>().add(LoadMyClansRequested(authState.user.uid));
+      context.read<ClanBloc>().add(LoadMyClansRequested(authState.user.id));
     }
   }
 
@@ -86,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
               id: 'skeleton',
               name: 'Loading Tribe Name',
               description: 'Loading description for this tribe...',
-              imageUrl: 'https://via.placeholder.com/150',
+              imageUrl: '',
               adminId: 'skeleton',
               adminName: 'Admin Name',
               memberCount: 0,
@@ -140,8 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
             String photo = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100";
             
             if (state is AuthAuthenticated) {
-              name = state.user.displayName?.split(' ')[0] ?? "User";
-              photo = state.user.photoURL ?? photo;
+              name = state.user.name.split(' ')[0];
+              photo = state.user.photoUrl ?? photo;
             }
 
             return Row(
@@ -172,7 +173,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                _buildLocationPill(),
+                Row(
+                  children: [
+                    _buildLeaderboardButton(),
+                    SizedBox(width: 8.w),
+                    _buildLocationPill(),
+                  ],
+                ),
               ],
             );
           },
@@ -202,6 +209,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLeaderboardButton() {
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LeaderboardScreen())),
+      child: Container(
+        padding: EdgeInsets.all(8.r),
+        decoration: BoxDecoration(
+          color: Colors.amber.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(Icons.emoji_events_rounded, color: Colors.amber[700], size: 20.w),
       ),
     );
   }

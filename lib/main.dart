@@ -74,9 +74,10 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
+        print(state);
         if (state is AuthAuthenticated) {
           return const MainNavigation();
-        } else if (state is AuthUnauthenticated || state is AuthFailure) {
+        } else if (state is AuthUnauthenticated) {
           return const OnboardingScreen();
         }
         return const SplashScreen();

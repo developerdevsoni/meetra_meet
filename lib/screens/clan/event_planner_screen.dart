@@ -13,6 +13,8 @@ import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:convert';
+import 'package:dio/dio.dart';
 
 class EventPlannerScreen extends StatefulWidget {
   final ClanModel clan;
@@ -33,6 +35,32 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
   TimeOfDay _selectedTime = const TimeOfDay(hour: 10, minute: 0);
   File? _imageFile;
   bool _isLoading = false;
+  List<dynamic> _locationSuggestions = [];
+  bool _isSearchingLocation = false;
+
+  Future<void> _searchLocations(String query) async {
+    if (query.length < 3) {
+      setState(() => _locationSuggestions = []);
+      return;
+    }
+
+    setState(() => _isSearchingLocation = true);
+
+    try {
+      final url = 'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&addressdetails=1';
+      final response = await Dio().get(url, options: Options(headers: {
+        'User-Agent': 'meetra_meet_app',
+      }));
+
+      if (response.statusCode == 200) {
+        setState(() => _locationSuggestions = response.data);
+      }
+    } catch (e) {
+      debugPrint('Location search error: $e');
+    } finally {
+      setState(() => _isSearchingLocation = false);
+    }
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -80,11 +108,11 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
         title: _titleController.text.trim(),
         description: _descController.text.trim(),
         clanId: widget.clan.id,
-        plannerId: currentUser.uid,
+        plannerId: currentUser.id,
         location: _locationController.text.trim(),
         eventDate: finalDateTime,
         imageUrl: imageUrl.isEmpty ? 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1000' : imageUrl,
-        participants: [currentUser.uid],
+        participants: [currentUser.id],
         isPremium: false,
         createdAt: DateTime.now(),
       );
@@ -124,7 +152,8 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
                     SizedBox(height: 20.h),
                     _buildTextField(_descController, 'Description', Icons.description_rounded, maxLines: 3),
                     SizedBox(height: 20.h),
-                    _buildTextField(_locationController, 'Meeting Point / Location', Icons.location_on_rounded),
+                    _buildLocationField(),
+                    if (_locationSuggestions.isNotEmpty) _buildSuggestionsList(),
                     SizedBox(height: 32.h),
                     Row(
                       children: [
@@ -172,6 +201,54 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.r), borderSide: BorderSide.none),
       ),
       validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+    );
+  }
+
+  Widget _buildLocationField() {
+    return TextFormField(
+      controller: _locationController,
+      onChanged: (value) => _searchLocations(value),
+      decoration: InputDecoration(
+        labelText: 'Meeting Point / Location',
+        prefixIcon: Icon(Icons.location_on_rounded, color: AppColors.primary),
+        suffixIcon: _isSearchingLocation 
+            ? SizedBox(width: 20.w, height: 20.w, child: const Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator(strokeWidth: 2))) 
+            : null,
+        filled: true,
+        fillColor: AppColors.surfaceContainerLow,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.r), borderSide: BorderSide.none),
+      ),
+      validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+    );
+  }
+
+  Widget _buildSuggestionsList() {
+    return Container(
+      margin: EdgeInsets.only(top: 4.h),
+      constraints: BoxConstraints(maxHeight: 200.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: _locationSuggestions.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final suggestion = _locationSuggestions[index];
+          return ListTile(
+            leading: const Icon(Icons.location_city_rounded, size: 20),
+            title: Text(suggestion['display_name'] ?? '', style: TextStyle(fontSize: 13.sp), maxLines: 2, overflow: TextOverflow.ellipsis),
+            onTap: () {
+              setState(() {
+                _locationController.text = suggestion['display_name'];
+                _locationSuggestions = [];
+              });
+            },
+          );
+        },
+      ),
     );
   }
 

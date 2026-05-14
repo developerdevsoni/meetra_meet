@@ -113,7 +113,7 @@ class _ClanAdminScreenState extends State<ClanAdminScreen> {
 
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, authState) {
-        final currentUserId = authState is AuthAuthenticated ? authState.user.uid : null;
+        final currentUserId = authState is AuthAuthenticated ? authState.user.id : null;
 
         return GestureDetector(
           onTap: () {

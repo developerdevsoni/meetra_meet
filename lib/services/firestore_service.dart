@@ -37,6 +37,17 @@ class FirestoreService {
     }
   }
 
+  Future<void> updateUser(UserModel user) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      await db.collection('users').doc(user.id).update(user.toMap());
+    } catch (e) {
+      print('Firestore error updating user: $e');
+    }
+  }
+
+
   Future<void> updateFcmToken(String userId) async {
     final db = _db;
     if (db == null) return;
@@ -47,6 +58,18 @@ class FirestoreService {
       }
     } catch (e) {
       print('Firestore update FCM error: $e');
+    }
+  }
+
+  Future<void> likeUser(String userId) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      await db.collection('users').doc(userId).update({
+        'reputation': FieldValue.increment(1)
+      });
+    } catch (e) {
+      print('Firestore like user error: $e');
     }
   }
 
