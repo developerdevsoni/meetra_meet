@@ -476,13 +476,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: EdgeInsets.all(2.r),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(color: AppColors.primary, width: 1.5),
               ),
-              child: CircleAvatar(
-                radius: 26.r,
-                backgroundColor: AppColors.primary.withOpacity(0.1),
-                backgroundImage: CachedNetworkImageProvider(clan.imageUrl),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14.r),
+                child: CachedNetworkImage(
+                  imageUrl: clan.imageUrl,
+                  width: 52.r,
+                  height: 52.r,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Positioned(
@@ -556,36 +560,22 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Stack(
               children: [
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 16.h),
-                    child: Container(
-                      height: 120.w,
-                      width: 120.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: clan.imageUrl,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: AppColors.primary.withOpacity(0.05),
-                            child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: AppColors.primary.withOpacity(0.1),
-                            child: Icon(Icons.image_not_supported_rounded, color: AppColors.primary.withOpacity(0.5)),
-                          ),
-                        ),
-                      ),
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+                  child: CachedNetworkImage(
+                    imageUrl: clan.imageUrl,
+                    height: 160.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 160.h,
+                      color: AppColors.primary.withOpacity(0.05),
+                      child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 160.h,
+                      color: AppColors.primary.withOpacity(0.1),
+                      child: Icon(Icons.image_not_supported_rounded, color: AppColors.primary.withOpacity(0.5)),
                     ),
                   ),
                 ),
@@ -732,25 +722,24 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Row(
           children: [
-            Container(
-              height: 70.w,
-              width: 70.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary.withOpacity(0.1), width: 1),
-              ),
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: clan.imageUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: AppColors.primary.withOpacity(0.05),
-                    child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: AppColors.primary.withOpacity(0.1),
-                    child: Icon(Icons.groups_rounded, color: AppColors.primary.withOpacity(0.5), size: 30.w),
-                  ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: CachedNetworkImage(
+                imageUrl: clan.imageUrl, 
+                width: 70.w, 
+                height: 70.w, 
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  width: 70.w, 
+                  height: 70.w, 
+                  color: AppColors.primary.withOpacity(0.05),
+                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  width: 70.w, 
+                  height: 70.w, 
+                  color: AppColors.primary.withOpacity(0.1),
+                  child: Icon(Icons.groups_rounded, color: AppColors.primary.withOpacity(0.5), size: 30.w),
                 ),
               ),
             ),
