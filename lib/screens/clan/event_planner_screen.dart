@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:meetra_meet/blocs/auth/auth_bloc.dart';
 import 'package:meetra_meet/blocs/auth/auth_state.dart';
 import 'package:meetra_meet/models/clan_model.dart';
@@ -15,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 class EventPlannerScreen extends StatefulWidget {
   final ClanModel clan;
@@ -39,9 +41,27 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
   bool _isSearchingLocation = false;
   double? _selectedLat;
   double? _selectedLng;
+  String? _mapboxToken;
+  final MapController _mapController = MapController();
+  
+  bool _isPaid = false;
+  final _feesController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _contactController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMapboxToken();
+  }
+
+  Future<void> _loadMapboxToken() async {
+    final token = await FirestoreService().getMapboxToken();
+    setState(() => _mapboxToken = token);
+  }
 
   Future<void> _searchLocations(String query) async {
-    if (query.length < 3) {
+    if (query.isEmpty || _mapboxToken == null) {
       setState(() => _locationSuggestions = []);
       return;
     }
@@ -49,16 +69,15 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
     setState(() => _isSearchingLocation = true);
 
     try {
-      final url = 'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&addressdetails=1';
-      final response = await Dio().get(url, options: Options(headers: {
-        'User-Agent': 'meetra_meet_app',
-      }));
+      // Mapbox Suggest API
+      final url = 'https://api.mapbox.com/search/searchbox/v1/suggest?q=${Uri.encodeComponent(query)}&access_token=$_mapboxToken&session_token=${const Uuid().v4()}';
+      final response = await Dio().get(url);
 
       if (response.statusCode == 200) {
-        setState(() => _locationSuggestions = response.data);
+        setState(() => _locationSuggestions = response.data['suggestions'] ?? []);
       }
     } catch (e) {
-      debugPrint('Location search error: $e');
+      debugPrint('Mapbox search error: $e');
     } finally {
       setState(() => _isSearchingLocation = false);
     }
@@ -118,6 +137,10 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
         imageUrl: imageUrl.isEmpty ? 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1000' : imageUrl,
         participants: [currentUser.id],
         isPremium: false,
+        isPaid: _isPaid,
+        fees: _isPaid ? _feesController.text.trim() : '',
+        ageLimit: _ageController.text.trim(),
+        plannerContact: _contactController.text.trim(),
         createdAt: DateTime.now(),
       );
 
@@ -158,6 +181,10 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
                     SizedBox(height: 20.h),
                     _buildLocationField(),
                     if (_locationSuggestions.isNotEmpty) _buildSuggestionsList(),
+                    if (_selectedLat != null && _selectedLng != null) ...[
+                      SizedBox(height: 16.h),
+                      _buildMapPreview(),
+                    ],
                     SizedBox(height: 32.h),
                     Row(
                       children: [
@@ -166,6 +193,16 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
                         Expanded(child: _buildPickerTile('Time', _selectedTime.format(context), Icons.access_time_rounded, _pickTime)),
                       ],
                     ),
+                    SizedBox(height: 32.h),
+                    _buildPaidSelection(),
+                    if (_isPaid) ...[
+                      SizedBox(height: 20.h),
+                      _buildTextField(_feesController, 'Entry Fees (INR)', Icons.payments_rounded, keyboardType: TextInputType.number),
+                    ],
+                    SizedBox(height: 20.h),
+                    _buildTextField(_ageController, 'Age Bar (e.g. 18-35)', Icons.person_pin_circle_rounded),
+                    SizedBox(height: 20.h),
+                    _buildTextField(_contactController, 'Planner Contact Number', Icons.phone_rounded, keyboardType: TextInputType.phone),
                     SizedBox(height: 48.h),
                     SizedBox(
                       width: double.infinity,
@@ -196,9 +233,10 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {int maxLines = 1}) {
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {int maxLines = 1, TextInputType keyboardType = TextInputType.text}) {
     return TextFormField(
       controller: controller, maxLines: maxLines,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label, prefixIcon: Icon(icon, color: AppColors.primary),
         filled: true, fillColor: AppColors.surfaceContainerLow,
@@ -211,7 +249,8 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
   Widget _buildLocationField() {
     return TextFormField(
       controller: _locationController,
-      onChanged: (value) => _searchLocations(value),
+      textInputAction: TextInputAction.search,
+      onFieldSubmitted: (value) => _searchLocations(value),
       decoration: InputDecoration(
         labelText: 'Meeting Point / Location',
         prefixIcon: Icon(Icons.location_on_rounded, color: AppColors.primary),
@@ -242,15 +281,36 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
         itemBuilder: (context, index) {
           final suggestion = _locationSuggestions[index];
           return ListTile(
-            leading: const Icon(Icons.location_city_rounded, size: 20),
-            title: Text(suggestion['display_name'] ?? '', style: TextStyle(fontSize: 13.sp), maxLines: 2, overflow: TextOverflow.ellipsis),
-            onTap: () {
-              setState(() {
-                _locationController.text = suggestion['display_name'];
-                _selectedLat = double.tryParse(suggestion['lat']?.toString() ?? '');
-                _selectedLng = double.tryParse(suggestion['lon']?.toString() ?? '');
-                _locationSuggestions = [];
-              });
+            leading: const Icon(Icons.location_city_rounded, size: 20, color: AppColors.primary),
+            title: Text(suggestion['name'] ?? '', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+            subtitle: Text(suggestion['full_address'] ?? suggestion['place_formatted'] ?? '', style: TextStyle(fontSize: 12.sp, color: AppColors.onSurfaceVariant), maxLines: 2, overflow: TextOverflow.ellipsis),
+            onTap: () async {
+              // For Mapbox suggestions, we might need another call to retrieve coordinates (retrieve API)
+              // or check if they are in the suggestion (usually suggest doesn't have coords, retrieve does)
+              // Let's assume we need to call retrieve API to get the coordinates from mapbox_id
+              final mapboxId = suggestion['mapbox_id'];
+              if (mapboxId != null && _mapboxToken != null) {
+                setState(() => _isSearchingLocation = true);
+                try {
+                  final retrieveUrl = 'https://api.mapbox.com/search/searchbox/v1/retrieve/$mapboxId?access_token=$_mapboxToken&session_token=${const Uuid().v4()}';
+                  final response = await Dio().get(retrieveUrl);
+                  if (response.statusCode == 200) {
+                    final feature = response.data['features'][0];
+                    final coords = feature['geometry']['coordinates'];
+                    setState(() {
+                      _locationController.text = suggestion['full_address'] ?? suggestion['name'];
+                      _selectedLat = coords[1];
+                      _selectedLng = coords[0];
+                      _locationSuggestions = [];
+                    });
+                    _mapController.move(LatLng(_selectedLat!, _selectedLng!), 15);
+                  }
+                } catch (e) {
+                  debugPrint('Mapbox retrieve error: $e');
+                } finally {
+                  setState(() => _isSearchingLocation = false);
+                }
+              }
             },
           );
         },
@@ -273,6 +333,82 @@ class _EventPlannerScreenState extends State<EventPlannerScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMapPreview() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Selected Location', style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+        SizedBox(height: 8.h),
+        Container(
+          height: 180.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(color: AppColors.outlineVariant),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.r),
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: LatLng(_selectedLat ?? 26.2389, _selectedLng ?? 73.0243),
+                initialZoom: 15.0,
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.meetra.meet',
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: LatLng(_selectedLat!, _selectedLng!),
+                      width: 40.w,
+                      height: 40.w,
+                      child: const Icon(Icons.location_on_rounded, color: Colors.red, size: 40),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaidSelection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Event Type', style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<bool>(
+                title: const Text('Free'),
+                value: false,
+                groupValue: _isPaid,
+                activeColor: AppColors.primary,
+                contentPadding: EdgeInsets.zero,
+                onChanged: (v) => setState(() => _isPaid = v!),
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<bool>(
+                title: const Text('Paid'),
+                value: true,
+                groupValue: _isPaid,
+                activeColor: AppColors.primary,
+                contentPadding: EdgeInsets.zero,
+                onChanged: (v) => setState(() => _isPaid = v!),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -59,12 +59,21 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
+	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>https</string>
+		<string>http</string>
+		<string>comgooglemaps</string>
+		<string>baidumap</string>
+		<string>iosamap</string>
+		<string>waze</string>
+		<string>yandexmaps</string>
+		<string>yandexnavi</string>
+		<string>citymapper</string>
+		<string>mapsme</string>
+		<string>osmandmaps</string>
+		<string>sosmap</string>
+		<string>googlemaps</string>
 	</array>
 </dict>
 </plist>

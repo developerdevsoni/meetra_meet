@@ -7,6 +7,7 @@ import 'package:meetra_meet/blocs/auth/auth_state.dart';
 import 'package:meetra_meet/models/event_model.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -207,42 +208,50 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Widget _buildLocationMap(EventModel event) {
-    if (event.latitude == null || event.longitude == null) return const SizedBox.shrink();
+    // if (event.latitude == null || event.longitude == null) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Location', style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.bold)),
         SizedBox(height: 12.h),
-        Container(
-          height: 200.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(color: AppColors.outlineVariant),
+        GestureDetector(
+          onTap: () => _openMap(
+            event.latitude ?? 0.0,
+            event.longitude ?? 0.0,
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24.r),
-            child: FlutterMap(
-              options: MapOptions(
-                initialCenter: LatLng(event.latitude!, event.longitude!),
-                initialZoom: 15.0,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.meetra.meet',
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: LatLng(event.latitude!, event.longitude!),
-                      width: 40.w,
-                      height: 40.w,
-                      child: const Icon(Icons.location_on_rounded, color: Colors.red, size: 40),
+          child: Container(
+            height: 200.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24.r),
+              border: Border.all(color: AppColors.outlineVariant),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24.r),
+              child: IgnorePointer(
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(event.latitude??0.0, event.longitude??0.0),
+                    initialZoom: 15.0,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.meetra.meet',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: LatLng(event.latitude??0.0, event.longitude??0.0),
+                          width: 40.w,
+                          height: 40.w,
+                          child: const Icon(Icons.location_on_rounded, color: Colors.red, size: 40),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -250,11 +259,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: () {
-              // Open in external maps
-              // final url = 'https://www.google.com/maps/search/?api=1&query=${event.latitude},${event.longitude}';
-              // Actually better to use url_launcher if available, but I'll stick to basic for now
-            },
+            onPressed: () => _openMap(event.latitude??0.0, event.longitude??0.0),
             icon: const Icon(Icons.directions_rounded),
             label: const Text('Get Directions'),
             style: OutlinedButton.styleFrom(
@@ -266,6 +271,36 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> _openMap(double lat, double lng) async {
+    final googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final appleMapsUrl = 'https://maps.apple.com/?q=$lat,$lng';
+    
+    try {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        final geoUrl = 'geo:$lat,$lng?q=$lat,$lng';
+        if (await canLaunchUrl(Uri.parse(geoUrl))) {
+          await launchUrl(Uri.parse(geoUrl));
+        } else {
+          await launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication);
+        }
+      } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+        if (await canLaunchUrl(Uri.parse(appleMapsUrl))) {
+          await launchUrl(Uri.parse(appleMapsUrl));
+        } else {
+          await launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication);
+        }
+      } else {
+        await launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      debugPrint('Error launching maps: $e');
+      // Final fallback to web browser
+      if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
+        await launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication);
+      }
+    }
   }
 
   Widget _buildAttendanceSection(EventModel event) {
@@ -388,19 +423,40 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             final isAttending = event.participants.contains(currentUserId);
             final isCheckedIn = event.attendees.contains(currentUserId);
 
-            if (!isAttending) {
-              return _buildActionButton('Join Event', () => _firestoreService.joinEvent(widget.eventId, currentUserId));
-            }
+            return FutureBuilder<bool>(
+              future: _firestoreService.isMemberOfClan(currentUserId, event.clanId),
+              builder: (context, memberSnapshot) {
+                final isMember = memberSnapshot.data ?? false;
 
-            if (_isEventDay && _isNear && !isCheckedIn) {
-              return _buildActionButton('I am in', () => _firestoreService.markAttendance(widget.eventId, currentUserId), color: AppColors.success);
-            }
+                if (!isMember) {
+                  return _buildActionButton(
+                      'Join Clan to Participate',
+                          () => _showJoinClanDialog(context, event.clanId),
+                      color: AppColors.primary.withOpacity(0.8)
+                  );
+                }
 
-            if (isCheckedIn) {
-              return _buildActionButton('Checked In', null, color: AppColors.success.withOpacity(0.5));
-            }
+                if (!isAttending) {
+                  return _buildActionButton('Join Event', () =>
+                      _firestoreService.joinEvent(
+                          widget.eventId, currentUserId));
+                }
 
-            return _buildActionButton('Event Starts Soon', null, color: AppColors.outlineVariant);
+                if (_isEventDay && _isNear && !isCheckedIn) {
+                  return _buildActionButton('I am in', () =>
+                      _firestoreService.markAttendance(
+                          widget.eventId, currentUserId),
+                      color: AppColors.success);
+                }
+
+                if (isCheckedIn) {
+                  return _buildActionButton('Checked In', null,
+                      color: AppColors.success.withOpacity(0.5));
+                }
+                return _buildActionButton(
+                    'Event Starts Soon', null, color: AppColors.outlineVariant);
+              }
+            );
           },
         );
       },
@@ -427,6 +483,32 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           ),
           child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
+      ),
+    );
+  }
+
+  void _showJoinClanDialog(BuildContext context, String clanId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Join Clan Required'),
+        content: const Text('You must be a member of the clan to join this event.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final authState = context.read<AuthBloc>().state;
+              if (authState is AuthAuthenticated) {
+                await _firestoreService.joinClan(authState.user.id, clanId);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Joined clan! Now you can join the event.')));
+                }
+              }
+            },
+            child: const Text('Join Clan Now'),
+          ),
+        ],
       ),
     );
   }

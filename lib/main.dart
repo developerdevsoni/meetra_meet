@@ -13,6 +13,9 @@ import 'package:meetra_meet/services/auth_service.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:meetra_meet/firebase_options.dart';
+import 'package:app_links/app_links.dart';
+import 'package:meetra_meet/screens/clan/clan_detail_screen.dart';
+import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +32,58 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  void _initDeepLinks() {
+    _appLinks = AppLinks();
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      _handleDeepLink(uri);
+    });
+  }
+
+  void _handleDeepLink(Uri uri) {
+    if (uri.path.contains('/clan') || uri.host == 'clan') {
+      final clanId = uri.queryParameters['id'];
+      if (clanId != null) {
+        _navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (_) => FutureBuilder(
+              future: FirestoreService().getAllClans().first, // Simplest way to get the clan object
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final clan = snapshot.data!.firstWhere((c) => c.id == clanId);
+                  return ClanDetailScreen(clan: clan);
+                }
+                return const Scaffold(body: Center(child: CircularProgressIndicator()));
+              },
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +107,7 @@ class MyApp extends StatelessWidget {
             ],
             child: MaterialApp(
               title: 'Meetra-Meet',
+              navigatorKey: _navigatorKey,
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,

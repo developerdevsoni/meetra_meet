@@ -11,6 +11,7 @@ import 'package:meetra_meet/screens/chat/chat_screens.dart';
 import 'package:meetra_meet/services/firestore_service.dart';
 import 'package:meetra_meet/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ClanAdminScreen extends StatefulWidget {
   final ClanModel clan;
@@ -41,6 +42,38 @@ class _ClanAdminScreenState extends State<ClanAdminScreen> {
     }
   }
 
+  Future<void> _removeMember(String userId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Member'),
+        content: const Text('Are you sure you want to remove this member from the clan?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await FirestoreService().removeMemberFromClan(userId, widget.clan.id);
+      _loadMembers();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Member removed.')));
+      }
+    }
+  }
+
+  void _shareClan() {
+    final String shareUrl = 'https://meetra-meet.web.app/clan?id=${widget.clan.id}';
+    final String message = "Join my clan '${widget.clan.name}' on Meetra! Connect and discover together. ✨\n\n$shareUrl";
+    Share.share(message);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +82,11 @@ class _ClanAdminScreenState extends State<ClanAdminScreen> {
         title: Text('Clan Management', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: AppColors.primary),
+            icon: const Icon(Icons.share_rounded, color: AppColors.primary),
+            onPressed: _shareClan,
+          ),
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => EventPlannerScreen(clan: widget.clan))),
           ),
         ],
@@ -73,7 +110,6 @@ class _ClanAdminScreenState extends State<ClanAdminScreen> {
                   else
                     ..._members.map((member) => _buildMemberCard(member)),
                   SizedBox(height: 32.h),
-                  _buildQuickActions(),
                 ],
               ),
             ),
@@ -164,13 +200,31 @@ class _ClanAdminScreenState extends State<ClanAdminScreen> {
                     ],
                   ),
                 ),
+                if (!isAdmin)
+                  IconButton(
+                    icon: const Icon(Icons.person_remove_rounded, color: Colors.redAccent),
+                    onPressed: () => _removeMember(user.id),
+                  ),
                 IconButton(
-                  icon: const Icon(Icons.star_outline_rounded, color: Colors.amber),
+                  icon: const Icon(Icons.chat_bubble_outline_rounded, color: AppColors.primary),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Star given to ${user.name}!')));
+                    if (currentUserId != null && currentUserId != user.id) {
+                      final chatId = currentUserId.compareTo(user.id) < 0 
+                          ? '${currentUserId}_${user.id}' 
+                          : '${user.id}_$currentUserId';
+                          
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatDetailScreen(
+                            chatId: chatId,
+                            title: user.name,
+                          ),
+                        ),
+                      );
+                    }
                   },
                 ),
-                Icon(Icons.chat_bubble_outline_rounded, size: 20.r, color: AppColors.primary),
               ],
             ),
           ),

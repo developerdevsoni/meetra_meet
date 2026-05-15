@@ -129,6 +129,38 @@ class FirestoreService {
     }
   }
 
+  Future<void> removeMemberFromClan(String userId, String clanId) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      // 1. Remove clanId from user's joinedClans
+      await db.collection('users').doc(userId).update({
+        'joinedClans': FieldValue.arrayRemove([clanId])
+      });
+      // 2. Decrement clan memberCount
+      await db.collection('clans').doc(clanId).update({
+        'memberCount': FieldValue.increment(-1)
+      });
+    } catch (e) {
+      print('Firestore remove member error: $e');
+    }
+  }
+
+  Future<bool> isMemberOfClan(String userId, String clanId) async {
+    final db = _db;
+    if (db == null) return false;
+    try {
+      final doc = await db.collection('users').doc(userId).get();
+      if (doc.exists) {
+        List<dynamic> joinedClans = doc.data()?['joinedClans'] ?? [];
+        return joinedClans.contains(clanId);
+      }
+    } catch (e) {
+      print('Firestore check membership error: $e');
+    }
+    return false;
+  }
+
   Stream<List<ClanModel>> getMyClans(String userId) {
     final db = _db;
     if (db == null) return Stream.value([]);
@@ -318,5 +350,19 @@ class FirestoreService {
     } catch (e) {
       print('Firestore error: $e');
     }
+  }
+
+  Future<String?> getMapboxToken() async {
+    final db = _db;
+    if (db == null) return null;
+    try {
+      final doc = await db.collection('config').doc('mapbox').get();
+      if (doc.exists) {
+        return doc.data()?['token'];
+      }
+    } catch (e) {
+      print('Firestore error fetching mapbox token: $e');
+    }
+    return null;
   }
 }

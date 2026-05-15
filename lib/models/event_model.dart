@@ -19,6 +19,10 @@ class EventModel {
   var eventDate;
 
   var imageUrl;
+  final bool isPaid;
+  final String fees;
+  final String ageLimit;
+  final String plannerContact;
 
   EventModel({
     required this.id,
@@ -35,6 +39,10 @@ class EventModel {
     this.attendees = const [],
     required this.isPremium,
     required this.createdAt,
+    this.isPaid = false,
+    this.fees = '',
+    this.ageLimit = '',
+    this.plannerContact = '',
   });
 
   factory EventModel.fromMap(Map<String, dynamic> map, String id) {
@@ -54,6 +62,10 @@ class EventModel {
       participants: List<String>.from(map['participants'] ?? []),
       attendees: List<String>.from(map['attendees'] ?? []),
       isPremium: map['isPremium'] ?? false,
+      isPaid: map['isPaid'] ?? false,
+      fees: map['fees'] ?? '',
+      ageLimit: map['ageLimit'] ?? '',
+      plannerContact: map['plannerContact'] ?? '',
       createdAt: map['createdAt'] != null 
           ? (map['createdAt'] as Timestamp).toDate() 
           : DateTime.now(),
@@ -74,6 +86,10 @@ class EventModel {
       'participants': participants,
       'attendees': attendees,
       'isPremium': isPremium,
+      'isPaid': isPaid,
+      'fees': fees,
+      'ageLimit': ageLimit,
+      'plannerContact': plannerContact,
       'createdAt': FieldValue.serverTimestamp(),
     };
   }
